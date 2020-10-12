@@ -1,0 +1,14 @@
+Participant:                Name
+Number of rounds:           3
+Total duration:             10
+Number of apples:           5
+Presentation duration:      500
+Interval:                   equal
+
+ROUND 1         2020-10-10T01:40:20.789Z
+--------------------------------------------------------------
+correct:        5
+incorrect:      0
+percentage:     1
+sequence:        7,  6,  8,  4,  2
+guessed:         7,  6,  8,  4,  2

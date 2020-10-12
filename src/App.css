@@ -1,38 +1,103 @@
 .App {
+  height: 100vh;
+}
+
+.actions-btn-group {
+  position: absolute;
+  margin: 5px;
+}
+
+.pickorder-btn-group {
+  position: absolute;
+  margin: 5px;
+  margin-left: 60px;
+}
+
+.btn-fat {
+  border-width: 3px !important;
+}
+
+.modal-backdrop {
+  background: rgba(0,0,0,0.25);
+}
+
+.container-height {
+  height: 100%;
+  max-height: 855px;
+}
+
+.rows-6 {
+  margin: 0;
+  height: 15.67%;
+}
+
+.rows-6:nth-child(even).rows-6:not(:last-child) {
+  margin-bottom: 2.3%;
+}
+
+.col {
+  /* background-color: red;
+  border: 1px solid black;
+  box-sizing: border-box; */
+  height: 100%;
+}
+
+.img-container {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+img {
+  margin-top: 5%;
+  width: 85%;
+  height: 90%;
+  object-fit: contain;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.box-container {
+  padding: 5px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.box {
+  margin: auto;
+  width: 70%;
+  height: 100%;
+  box-sizing: border-box;
+  border: 2px solid #555;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  text-align: center;
+  font-size: 3rem;
 }
 
-.App-link {
-  color: #61dafb;
+.box-disabled {
+  background-color: #fff;
+  cursor: default;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.box-pickable {
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.box-picked {
+  background-color: #e7e7e7;
+  cursor: pointer;
+}
+
+.apple-red {
+  background-image: url('/images/apple_red.png');
+  background-color: #fff;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.apple-yellow {
+  background-image: url('/images/apple_yellow.jpg');
+  background-color: #fff;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
 }
