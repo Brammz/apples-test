@@ -14,6 +14,7 @@ class App extends React.Component {
     super(props);
     this.state = {          //         |--------------------------------------------|
       gameState: 'initial', // initial -> playing -> picking -> picked -> completed -> finished
+      showMenu: true,
       showSettings: false,
       practiceFeedback: false,
       showFeedback: false,
@@ -37,6 +38,7 @@ class App extends React.Component {
   componentDidMount() {
     document.addEventListener('keypress', (e) => {
       e.preventDefault();
+      if (e.code === 'Space' && e.ctrlKey) this.setState({ showMenu: !this.state.showMenu });
       if (e.code === 'KeyQ') this.logState();
     }, false);
 
@@ -303,29 +305,33 @@ class App extends React.Component {
               <Button variant="secondary" onClick={() => this.setState({ showFeedback: false })}>Close</Button>
             </Modal.Footer>
         </Modal>
-        <div className="actions-btn-group">
-          <Button onClick={() => this.setState({ showSettings: true })} disabled={!settingsEnabled} variant="secondary" className="mb-2">
-            <img src="/icons/gear.svg" alt="" title="Settings" />
-          </Button><br />
-          <Button onClick={this.downloadResults} variant="secondary" className="mb-2">
-            <img src="/icons/download.svg" alt="" title="Download" />
-          </Button><br />
-          <Button onClick={this.start} disabled={!startEnabled} variant="secondary" className="mb-2">
-            <img src="/icons/play.svg" alt="" title="Start" />
-          </Button><br />
-          <Button onClick={this.done} disabled={!doneEnabled} variant="secondary" className="mb-2">
-            <img src="/icons/check.svg" alt="" title="Done" />
-          </Button><br />
-          <Button variant={this.state.gameState === 'finished' ? 'success' : 'outline-dark'} disabled className="mb-2 btn-fat" style={{ width: '50px', height: '39px' }}><b>{this.state.gameState === 'finished' ? 'F' : `T${this.state.currentTrial}`}</b></Button><br />
-          {this.state.practiceFeedback && (<><Button variant="info" disabled className="mb-2 btn-fat" style={{ width: '50px', height: '39px' }}><b>P</b></Button><br /></>)}
-        </div>
-        <div className="pickorder-btn-group">
-          {Array.from({ length: this.state.nrOfFlashes }).map((_, i) => (
-            <div key={i+1}>
-              <Button onClick={() => this.setPickOrder(i+1)} variant={this.getPickOrderVariant(i+1)} className="mb-2 btn-fat" style={{ width: '50px', height: '39px' }}><b>{i+1}</b></Button><br />
+        {this.state.showMenu && (
+          <>
+            <div className="actions-btn-group">
+              <Button onClick={() => this.setState({ showSettings: true })} disabled={!settingsEnabled} variant="secondary" className="mb-2">
+                <img src="/icons/gear.svg" alt="" title="Settings" />
+              </Button><br />
+              <Button onClick={this.downloadResults} variant="secondary" className="mb-2">
+                <img src="/icons/download.svg" alt="" title="Download" />
+              </Button><br />
+              <Button onClick={this.start} disabled={!startEnabled} variant="secondary" className="mb-2">
+                <img src="/icons/play.svg" alt="" title="Start" />
+              </Button><br />
+              <Button onClick={this.done} disabled={!doneEnabled} variant="secondary" className="mb-2">
+                <img src="/icons/check.svg" alt="" title="Done" />
+              </Button><br />
+              <Button variant={this.state.gameState === 'finished' ? 'success' : 'outline-dark'} disabled className="mb-2 btn-fat" style={{ width: '50px', height: '39px' }}><b>{this.state.gameState === 'finished' ? 'F' : `T${this.state.currentTrial}`}</b></Button><br />
+              {this.state.practiceFeedback && (<><Button variant="info" disabled className="mb-2 btn-fat" style={{ width: '50px', height: '39px' }}><b>P</b></Button><br /></>)}
             </div>
-          ))}
-        </div>
+            <div className="pickorder-btn-group">
+              {Array.from({ length: this.state.nrOfFlashes }).map((_, i) => (
+                <div key={i+1}>
+                  <Button onClick={() => this.setPickOrder(i+1)} variant={this.getPickOrderVariant(i+1)} className="mb-2 btn-fat" style={{ width: '50px', height: '39px' }}><b>{i+1}</b></Button><br />
+                </div>
+              ))}
+            </div>
+          </>
+        )}
         <Container className="container-height">
           <Row className="rows-6">
             <Col className="img-container">
