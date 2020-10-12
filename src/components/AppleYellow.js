@@ -26,11 +26,12 @@ class AppleYellow extends React.Component {
       // https://stackoverflow.com/questions/14959200/dividing-a-number-into-random-unequal-parts
       interstimuliInterval: true, // true = equal, false = random; randomMin = presentationTime, randomMax = timeLeft
       timeBetweenFlashes: undefined,
-      results: [], // [{ trial, dateISO, sequenceLength, correct, wrong, percentage, sequence, guessedSequence }]
+      results: [], // [{ trial, dateISO, sequenceLength, correct, wrong, percentage, sequence, responseSequence }]
       currentTrial: 1,
       sequence: [],
-      guessedSequence: [],
+      responseSequence: [],
       userInputEnabled: false,
+      currentApple: undefined,
       pickOrder: undefined,
     };
   }
@@ -45,11 +46,11 @@ class AppleYellow extends React.Component {
     this.applyToBoxes((i) => {
       document.getElementById(i).addEventListener('contextmenu', (e) => {
         e.preventDefault();
-        if (this.state.guessedSequence.includes(i)) {
-          let newGuessedSequence = [...this.state.guessedSequence];
-          let index = newGuessedSequence.indexOf(i);
-          newGuessedSequence[index] = undefined;
-          this.setState({ guessedSequence: newGuessedSequence });
+        if (this.state.responseSequence.includes(i)) {
+          let newResponseSequence = [...this.state.responseSequence];
+          let index = newResponseSequence.indexOf(i);
+          newResponseSequence[index] = undefined;
+          this.setState({ responseSequence: newResponseSequence });
           this.setPickOrder(index+1);
         }
       });
@@ -75,7 +76,7 @@ class AppleYellow extends React.Component {
       csvContent += `incorrect:       ${result.incorrect}\n`;
       csvContent += `percentage:      ${result.percentage}\n`;
       csvContent += `sequence:       ${result.sequence.map(x => x < 10 ? ` ${x}` : `${x}`).join(', ')}\n`;
-      csvContent += `guessed:        ${result.guessedSequence.map(x => x < 10 ? ` ${x}` : `${x}`).join(', ')}\n`;
+      csvContent += `response:       ${result.responseSequence.map(x => x < 10 ? ` ${x}` : `${x}`).join(', ')}\n`;
     });
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
@@ -103,9 +104,9 @@ class AppleYellow extends React.Component {
   playSequence = async () => {
     await sleep(2000);
     for (let flash of this.state.sequence) {
-      document.getElementById(flash).classList.add('apple-red');
+      this.setState({ currentApple: flash });
       await sleep(this.state.presentationTime);
-      document.getElementById(flash).classList.remove('apple-red');
+      this.setState({ currentApple: undefined });
       await sleep((this.state.interstimuliInterval ? this.state.timeBetweenFlashes : this.state.timeBetweenFlashes()) * 1000);
     };
   }
@@ -125,7 +126,7 @@ class AppleYellow extends React.Component {
         ? (this.state.trialDuration - 2 - 1 - (this.state.nrOfFlashes*this.state.presentationTime/1000)) / (this.state.nrOfFlashes - 1)
         : () => { return 5 },
       sequence: shuffle([...defaultSequence]).slice(0, this.state.nrOfFlashes),
-      guessedSequence: Array.from({ length: this.state.nrOfFlashes }),
+      responseSequence: Array.from({ length: this.state.nrOfFlashes }),
     });
     await this.playSequence();
     this.setState({
@@ -138,30 +139,30 @@ class AppleYellow extends React.Component {
   handleBoxClick = (box) => {
     if (!this.state.userInputEnabled) return;
 
-    let newGuessedSequence = [...this.state.guessedSequence];
+    let newResponseSequence = [...this.state.responseSequence];
     let newPickOrder = this.state.pickOrder;
 
-    // pick order already exists (index in guessed is occupied)
-    if (newGuessedSequence[this.state.pickOrder-1]) newGuessedSequence[this.state.pickOrder-1] = undefined;
+    // pick order already exists (index in response is occupied)
+    if (newResponseSequence[this.state.pickOrder-1]) newResponseSequence[this.state.pickOrder-1] = undefined;
 
-    // box already has a pick order (guessed includes boxid)
-    if (newGuessedSequence.includes(box)) newGuessedSequence[newGuessedSequence.indexOf(box)] = undefined;
+    // box already has a pick order (response includes boxid)
+    if (newResponseSequence.includes(box)) newResponseSequence[newResponseSequence.indexOf(box)] = undefined;
 
-    newGuessedSequence[this.state.pickOrder-1] = box;
-    this.setState({ guessedSequence: newGuessedSequence });
+    newResponseSequence[this.state.pickOrder-1] = box;
+    this.setState({ responseSequence: newResponseSequence });
 
-    if (newGuessedSequence[this.state.pickOrder] || this.state.pickOrder+1 > this.state.sequence.length) newPickOrder = newGuessedSequence.indexOf(undefined);
+    if (newResponseSequence[this.state.pickOrder] || this.state.pickOrder+1 > this.state.sequence.length) newPickOrder = newResponseSequence.indexOf(undefined);
     if (newPickOrder === -1) this.setPickOrder({ pickOrder: undefined });
     else this.setPickOrder(newPickOrder+1);
 
-    if (newGuessedSequence.filter(g => !!g).length === this.state.sequence.length) this.setState({ gameState: 'picked' });
+    if (newResponseSequence.filter(g => !!g).length === this.state.sequence.length) this.setState({ gameState: 'picked' });
   }
 
   done = () => {
     let newResults = [...this.state.results];
     let correct = 0;
     let incorrect = 0;
-    this.state.guessedSequence.forEach((guess, i) => {
+    this.state.responseSequence.forEach((guess, i) => {
       if (this.state.sequence[i] === guess) correct++;
       else incorrect++;
     });
@@ -173,7 +174,7 @@ class AppleYellow extends React.Component {
       incorrect,
       percentage: correct/this.state.sequence.length,
       sequence: [...this.state.sequence],
-      guessedSequence: [...this.state.guessedSequence],
+      responseSequence: [...this.state.responseSequence],
     });
     if (this.state.currentTrial === this.state.nrOfTrials) {
       this.setState({
@@ -181,7 +182,7 @@ class AppleYellow extends React.Component {
         showFeedback: this.state.practiceFeedback,
         results: newResults,
         sequence: [],
-        guessedSequence: [],
+        responseSequence: [],
         userInputEnabled: false,
         pickOrder: undefined,
       });
@@ -193,7 +194,7 @@ class AppleYellow extends React.Component {
         results: newResults,
         currentTrial: this.state.currentTrial+1,
         sequence: [],
-        guessedSequence: [],
+        responseSequence: [],
         userInputEnabled: false,
         pickOrder: undefined,
       });
@@ -202,10 +203,12 @@ class AppleYellow extends React.Component {
 
   getBoxClassList = (box) => {
     let classList = ['box'];
-    if (['initial', 'playing', 'completed', 'finished'].includes(this.state.gameState)) {
+    if (box === this.state.currentApple) {
+      classList.push('apple-red');
+    } else if (['initial', 'playing', 'completed', 'finished'].includes(this.state.gameState)) {
       classList.push('box-disabled');
     } else {
-      if (this.state.guessedSequence.includes(box)) classList.push('box-picked');
+      if (this.state.responseSequence.includes(box)) classList.push('box-picked');
       else classList.push('box-pickable');
     }
     return classList.join(' ');
@@ -213,7 +216,7 @@ class AppleYellow extends React.Component {
 
   getPickOrderVariant = (pickOrder) => {
     const active = (this.state.pickOrder === pickOrder);
-    const picked = (!!this.state.guessedSequence[pickOrder-1]);
+    const picked = (!!this.state.responseSequence[pickOrder-1]);
     if (active && picked) return 'primary';
     else if (active && !picked) return 'outline-primary';
     else if (!active && picked) return 'secondary';
@@ -224,7 +227,7 @@ class AppleYellow extends React.Component {
     const settingsEnabled = (this.state.gameState === 'initial');
     const startEnabled = (this.state.gameState === 'initial' || this.state.gameState === 'completed');
     const doneEnabled = (this.state.gameState === 'picked');
-    const guessed = this.state.guessedSequence;
+    const response = this.state.responseSequence;
     return (
       <>
         <Modal id="settingsModal" show={this.state.showSettings} onHide={() => this.setState({ showSettings: false })} size="md">
@@ -291,12 +294,30 @@ class AppleYellow extends React.Component {
             <Modal.Body>
               {this.state.results.map((r, i) => (
                 <div key={i}>
-                  <span>Trial {r.trial}</span><br />
-                  <span>Correct:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{r.correct}</span><br />
-                  <span>Incorrect:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{r.incorrect}</span><br />
-                  <span>Percentage:&nbsp;&nbsp;&nbsp;{r.percentage}</span><br />
-                  <span>Sequence:&nbsp;&nbsp;&nbsp;&nbsp;{r.sequence.map(x => x < 10 ? ` ${x}` : `${x}`).join(', ')}</span><br />
-                  <span>Guessed:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{r.guessedSequence.map(x => x < 10 ? ` ${x}` : `${x}`).join(', ')}</span>
+                  <Row>
+                    <Col sm="4">Trial</Col>
+                    <Col sm="8">{r.trial}</Col>
+                  </Row>
+                  <Row>
+                    <Col sm="4">Correct</Col>
+                    <Col sm="8">{r.correct}</Col>
+                  </Row>
+                  <Row>
+                    <Col sm="4">Incorrect</Col>
+                    <Col sm="8">{r.incorrect}</Col>
+                  </Row>
+                  <Row>
+                    <Col sm="4">Percentage</Col>
+                    <Col sm="8">{r.percentage}</Col>
+                  </Row>
+                  <Row>
+                    <Col sm="4">Sequence</Col>
+                    <Col sm="8">{r.sequence.map(x => x < 10 ? ` ${x}` : `${x}`).join(', ')}</Col>
+                  </Row>
+                  <Row>
+                    <Col sm="4">Response</Col>
+                    <Col sm="8">{r.responseSequence.map(x => x < 10 ? ` ${x}` : `${x}`).join(', ')}</Col>
+                  </Row>
                   {i !== this.state.results.length-1 && (<><br /><br /></>)}
                 </div>
               ))}
@@ -306,7 +327,7 @@ class AppleYellow extends React.Component {
             </Modal.Footer>
         </Modal>
         {this.state.showMenu && (
-          <div class="menu">
+          <div className="menu">
             <div className="actions-btn-group">
               <Link to="/">
                 <Button variant="secondary" className="mb-2">
@@ -354,16 +375,16 @@ class AppleYellow extends React.Component {
           </Row>
           <Row className="rows-6">
             <Col className="box-container">
-              <div id="1" onClick={() => this.handleBoxClick(1)} className={this.getBoxClassList(1)}>{guessed.indexOf(1) !== -1 && (guessed.indexOf(1) + 1)}</div>
+              <div id="1" onClick={() => this.handleBoxClick(1)} className={this.getBoxClassList(1)}>{response.indexOf(1) !== -1 && (response.indexOf(1) + 1)}</div>
             </Col>
             <Col className="box-container">
-              <div id="2" onClick={() => this.handleBoxClick(2)} className={this.getBoxClassList(2)}>{guessed.indexOf(2) !== -1 && (guessed.indexOf(2) + 1)}</div>
+              <div id="2" onClick={() => this.handleBoxClick(2)} className={this.getBoxClassList(2)}>{response.indexOf(2) !== -1 && (response.indexOf(2) + 1)}</div>
             </Col>
             <Col className="box-container">
-              <div id="3" onClick={() => this.handleBoxClick(3)} className={this.getBoxClassList(3)}>{guessed.indexOf(3) !== -1 && (guessed.indexOf(3) + 1)}</div>
+              <div id="3" onClick={() => this.handleBoxClick(3)} className={this.getBoxClassList(3)}>{response.indexOf(3) !== -1 && (response.indexOf(3) + 1)}</div>
             </Col>
             <Col className="box-container">
-              <div id="4" onClick={() => this.handleBoxClick(4)} className={this.getBoxClassList(4)}>{guessed.indexOf(4) !== -1 && (guessed.indexOf(4) + 1)}</div>
+              <div id="4" onClick={() => this.handleBoxClick(4)} className={this.getBoxClassList(4)}>{response.indexOf(4) !== -1 && (response.indexOf(4) + 1)}</div>
             </Col>
           </Row>
           <Row className="rows-6">
@@ -382,16 +403,16 @@ class AppleYellow extends React.Component {
           </Row>
           <Row className="rows-6">
             <Col className="box-container">
-              <div id="5" onClick={() => this.handleBoxClick(5)} className={this.getBoxClassList(5)}>{guessed.indexOf(5) !== -1 && (guessed.indexOf(5) + 1)}</div>
+              <div id="5" onClick={() => this.handleBoxClick(5)} className={this.getBoxClassList(5)}>{response.indexOf(5) !== -1 && (response.indexOf(5) + 1)}</div>
             </Col>
             <Col className="box-container">
-              <div id="6" onClick={() => this.handleBoxClick(6)} className={this.getBoxClassList(6)}>{guessed.indexOf(6) !== -1 && (guessed.indexOf(6) + 1)}</div>
+              <div id="6" onClick={() => this.handleBoxClick(6)} className={this.getBoxClassList(6)}>{response.indexOf(6) !== -1 && (response.indexOf(6) + 1)}</div>
             </Col>
             <Col className="box-container">
-              <div id="7" onClick={() => this.handleBoxClick(7)} className={this.getBoxClassList(7)}>{guessed.indexOf(7) !== -1 && (guessed.indexOf(7) + 1)}</div>
+              <div id="7" onClick={() => this.handleBoxClick(7)} className={this.getBoxClassList(7)}>{response.indexOf(7) !== -1 && (response.indexOf(7) + 1)}</div>
             </Col>
             <Col className="box-container">
-              <div id="8" onClick={() => this.handleBoxClick(8)} className={this.getBoxClassList(8)}>{guessed.indexOf(8) !== -1 && (guessed.indexOf(8) + 1)}</div>
+              <div id="8" onClick={() => this.handleBoxClick(8)} className={this.getBoxClassList(8)}>{response.indexOf(8) !== -1 && (response.indexOf(8) + 1)}</div>
             </Col>
           </Row>
           <Row className="rows-6">
@@ -410,16 +431,16 @@ class AppleYellow extends React.Component {
           </Row>
           <Row className="rows-6">
             <Col className="box-container">
-              <div id="9" onClick={() => this.handleBoxClick(9)} className={this.getBoxClassList(9)}>{guessed.indexOf(9) !== -1 && (guessed.indexOf(9) + 1)}</div>
+              <div id="9" onClick={() => this.handleBoxClick(9)} className={this.getBoxClassList(9)}>{response.indexOf(9) !== -1 && (response.indexOf(9) + 1)}</div>
             </Col>
             <Col className="box-container">
-              <div id="10" onClick={() => this.handleBoxClick(10)} className={this.getBoxClassList(10)}>{guessed.indexOf(10) !== -1 && (guessed.indexOf(10) + 1)}</div>
+              <div id="10" onClick={() => this.handleBoxClick(10)} className={this.getBoxClassList(10)}>{response.indexOf(10) !== -1 && (response.indexOf(10) + 1)}</div>
             </Col>
             <Col className="box-container">
-              <div id="11" onClick={() => this.handleBoxClick(11)} className={this.getBoxClassList(11)}>{guessed.indexOf(11) !== -1 && (guessed.indexOf(11) + 1)}</div>
+              <div id="11" onClick={() => this.handleBoxClick(11)} className={this.getBoxClassList(11)}>{response.indexOf(11) !== -1 && (response.indexOf(11) + 1)}</div>
             </Col>
             <Col className="box-container">
-              <div id="12" onClick={() => this.handleBoxClick(12)} className={this.getBoxClassList(12)}>{guessed.indexOf(12) !== -1 && (guessed.indexOf(12) + 1)}</div>
+              <div id="12" onClick={() => this.handleBoxClick(12)} className={this.getBoxClassList(12)}>{response.indexOf(12) !== -1 && (response.indexOf(12) + 1)}</div>
             </Col>
           </Row>
         </Container>

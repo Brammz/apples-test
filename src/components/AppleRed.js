@@ -31,6 +31,7 @@ class AppleRed extends React.Component {
       sequence: [],
       responseSequence: [],
       userInputEnabled: false,
+      currentApple: undefined,
       pickOrder: undefined,
     };
   }
@@ -103,9 +104,9 @@ class AppleRed extends React.Component {
   playSequence = async () => {
     await sleep(2000);
     for (let flash of this.state.sequence) {
-      document.getElementById(flash).classList.add('apple-red');
+      this.setState({ currentApple: flash });
       await sleep(this.state.presentationTime);
-      document.getElementById(flash).classList.remove('apple-red');
+      this.setState({ currentApple: undefined });
       await sleep((this.state.interstimuliInterval ? this.state.timeBetweenFlashes : this.state.timeBetweenFlashes()) * 1000);
     };
   }
@@ -202,7 +203,9 @@ class AppleRed extends React.Component {
 
   getBoxClassList = (box) => {
     let classList = ['box'];
-    if (['initial', 'playing', 'completed', 'finished'].includes(this.state.gameState)) {
+    if (box === this.state.currentApple) {
+      classList.push('apple-red');
+    } else if (['initial', 'playing', 'completed', 'finished'].includes(this.state.gameState)) {
       classList.push('box-disabled');
     } else {
       if (this.state.responseSequence.includes(box)) classList.push('box-picked');
@@ -291,12 +294,30 @@ class AppleRed extends React.Component {
             <Modal.Body>
               {this.state.results.map((r, i) => (
                 <div key={i}>
-                  <span>Trial {r.trial}</span><br />
-                  <span>Correct:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{r.correct}</span><br />
-                  <span>Incorrect:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{r.incorrect}</span><br />
-                  <span>Percentage:&nbsp;&nbsp;&nbsp;{r.percentage}</span><br />
-                  <span>Sequence:&nbsp;&nbsp;&nbsp;&nbsp;{r.sequence.map(x => x < 10 ? ` ${x}` : `${x}`).join(', ')}</span><br />
-                  <span>Response:&nbsp;&nbsp;&nbsp;&nbsp;{r.responseSequence.map(x => x < 10 ? ` ${x}` : `${x}`).join(', ')}</span>
+                  <Row>
+                    <Col sm="4">Trial</Col>
+                    <Col sm="8">{r.trial}</Col>
+                  </Row>
+                  <Row>
+                    <Col sm="4">Correct</Col>
+                    <Col sm="8">{r.correct}</Col>
+                  </Row>
+                  <Row>
+                    <Col sm="4">Incorrect</Col>
+                    <Col sm="8">{r.incorrect}</Col>
+                  </Row>
+                  <Row>
+                    <Col sm="4">Percentage</Col>
+                    <Col sm="8">{r.percentage}</Col>
+                  </Row>
+                  <Row>
+                    <Col sm="4">Sequence</Col>
+                    <Col sm="8">{r.sequence.map(x => x < 10 ? ` ${x}` : `${x}`).join(', ')}</Col>
+                  </Row>
+                  <Row>
+                    <Col sm="4">Response</Col>
+                    <Col sm="8">{r.responseSequence.map(x => x < 10 ? ` ${x}` : `${x}`).join(', ')}</Col>
+                  </Row>
                   {i !== this.state.results.length-1 && (<><br /><br /></>)}
                 </div>
               ))}
@@ -306,7 +327,7 @@ class AppleRed extends React.Component {
             </Modal.Footer>
         </Modal>
         {this.state.showMenu && (
-          <div class="menu">
+          <div className="menu">
             <div className="actions-btn-group">
               <Link to="/">
                 <Button variant="secondary" className="mb-2">
