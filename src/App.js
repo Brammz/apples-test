@@ -7,7 +7,6 @@ const defaultSequence = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 /**
  * [ ] form validation (timings)
- * [ ] feedback option
  * [ ] random interval calculation
  */
 class App extends React.Component {
@@ -241,25 +240,25 @@ class App extends React.Component {
                 <Form.Group as={Row} controlId="nrOfTrials">
                   <Form.Label column sm={5}>Number of trials</Form.Label>
                   <Col sm={7}>
-                    <Form.Control type="number" value={this.state.nrOfTrials} onChange={(e) => this.setState({ nrOfTrials: +e.target.value })} />
+                    <Form.Control type="number" value={this.state.nrOfTrials} onChange={(e) => this.setState({ nrOfTrials: Math.max(1, +e.target.value) })} />
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="trialDuration">
                   <Form.Label column sm={5}>Trial duration (s)</Form.Label>
                   <Col sm={7}>
-                    <Form.Control type="number" value={this.state.trialDuration} onChange={(e) => this.setState({ trialDuration: +e.target.value })} />
+                    <Form.Control type="number" value={this.state.trialDuration} onChange={(e) => this.setState({ trialDuration: Math.max(4, +e.target.value) })} />
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="nrOfFlashes">
                   <Form.Label column sm={5}>Number of apples</Form.Label>
                   <Col sm={7}>
-                    <Form.Control type="number" value={this.state.nrOfFlashes} onChange={(e) => this.setState({ nrOfFlashes: +e.target.value })} />
+                    <Form.Control type="number" value={this.state.nrOfFlashes} onChange={(e) => this.setState({ nrOfFlashes: Math.min(12, Math.max(1, +e.target.value)) })} />
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="presentationTime">
                   <Form.Label column sm={5}>Presentation time (ms)</Form.Label>
                   <Col sm={7}>
-                    <Form.Control type="number" value={this.state.presentationTime} onChange={(e) => this.setState({ presentationTime: +e.target.value })} />
+                    <Form.Control type="number" min="500" value={this.state.presentationTime} onChange={(e) => this.setState({ presentationTime: Math.max(500, +e.target.value) })} />
                   </Col>
                 </Form.Group>
                 <fieldset>
