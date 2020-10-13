@@ -12,7 +12,8 @@ const defaultSequence = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 class AppleYellow extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {          //         |--------------------------------------------|
+    this.state = {
+      testType: 'yellow',   //         |--------------------------------------------|
       gameState: 'initial', // initial -> playing -> picking -> picked -> completed -> finished
       showMenu: true,
       showSettings: false,
@@ -26,13 +27,13 @@ class AppleYellow extends React.Component {
       // https://stackoverflow.com/questions/14959200/dividing-a-number-into-random-unequal-parts
       interstimuliInterval: true, // true = equal, false = random; randomMin = presentationTime, randomMax = timeLeft
       timeBetweenFlashes: undefined,
-      results: [], // [{ trial, dateISO, sequenceLength, correct, wrong, percentage, sequence, responseSequence }]
+      results: [], // [{ trial, dateISO, sequenceLength, correct, sequence, yellowApples, response }]
       currentTrial: 1,
       sequence: [],
-      responseSequence: [],
+      yellowApples: [],
+      response: undefined,
       userInputEnabled: false,
       currentApple: undefined,
-      pickOrder: undefined,
     };
   }
 
@@ -46,13 +47,10 @@ class AppleYellow extends React.Component {
     this.applyToBoxes((i) => {
       document.getElementById(i).addEventListener('contextmenu', (e) => {
         e.preventDefault();
-        if (this.state.responseSequence.includes(i)) {
-          let newResponseSequence = [...this.state.responseSequence];
-          let index = newResponseSequence.indexOf(i);
-          newResponseSequence[index] = undefined;
-          this.setState({ responseSequence: newResponseSequence });
-          this.setPickOrder(index+1);
-        }
+        this.setState({
+          gameState: 'picking',
+          response: undefined,
+        });
       });
     });
   }
@@ -61,7 +59,8 @@ class AppleYellow extends React.Component {
    * UI INTERACTION *
    ******************/
   downloadResults = () => {
-    let csvContent = 'data:text/csv;charset=utf-8,'
+    let csvContent = 'data:text/csv;charset=utf-8,';
+    csvContent += `Test:                       ${this.state.testType}\n`;
     csvContent += `Participant:                ${this.state.participant}\n`;
     csvContent += `Number of rounds:           ${this.state.nrOfTrials}\n`;
     csvContent += `Total duration:             ${this.state.trialDuration}\n`;
@@ -73,16 +72,15 @@ class AppleYellow extends React.Component {
       csvContent += `TRIAL ${result.trial < 10 ? `${result.trial} ` : `${result.trial}`}         ${result.dateISO}\n`;
       csvContent += `--------------------------------------------------------------\n`;
       csvContent += `correct:         ${result.correct}\n`;
-      csvContent += `incorrect:       ${result.incorrect}\n`;
-      csvContent += `percentage:      ${result.percentage}\n`;
       csvContent += `sequence:       ${result.sequence.map(x => x < 10 ? ` ${x}` : `${x}`).join(', ')}\n`;
-      csvContent += `response:       ${result.responseSequence.map(x => x < 10 ? ` ${x}` : `${x}`).join(', ')}\n`;
+      csvContent += `yellow apples:  ${result.yellowApples.map(x => x < 10 ? ` ${x}` : `${x}`).join(', ')}\n`;
+      csvContent += `response:       ${result.response}\n`;
     });
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('target', '_blank');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `${this.state.participant}_${new Date().toISOString()}.txt`);
+    link.setAttribute('download', `${this.state.participant}_${this.state.testType}_${new Date().toISOString()}.txt`);
     link.click();
     link.remove();
   };
@@ -111,70 +109,50 @@ class AppleYellow extends React.Component {
     };
   }
 
-  setPickOrder(i) {
-    if (i > this.state.sequence.length) return;
-    this.setState({ pickOrder: i });
-  }
-
   /************
    * GAMEPLAY *
    ************/
   start = async () => {
+    let sequence = shuffle([...defaultSequence]).slice(0, this.state.nrOfFlashes);
+    let randomPick = sequence[Math.floor(Math.random() * sequence.length)];
+    let yellowApples = [randomPick];
+    if (randomPick !== sequence[sequence.length-1] && Math.floor(Math.random()*2)+1 === 2) {
+      yellowApples.push(sequence[sequence.length-1]);
+    }
     this.setState({
       gameState: 'playing',
       timeBetweenFlashes: this.state.interstimuliInterval
         ? (this.state.trialDuration - 2 - 1 - (this.state.nrOfFlashes*this.state.presentationTime/1000)) / (this.state.nrOfFlashes - 1)
         : () => { return 5 },
-      sequence: shuffle([...defaultSequence]).slice(0, this.state.nrOfFlashes),
-      responseSequence: Array.from({ length: this.state.nrOfFlashes }),
+      sequence: sequence,
+      yellowApples: yellowApples,
     });
     await this.playSequence();
     this.setState({
       gameState: 'picking',
-      pickOrder: 1,
       userInputEnabled: true,
     });
   }
 
   handleBoxClick = (box) => {
     if (!this.state.userInputEnabled) return;
-
-    let newResponseSequence = [...this.state.responseSequence];
-    let newPickOrder = this.state.pickOrder;
-
-    // pick order already exists (index in response is occupied)
-    if (newResponseSequence[this.state.pickOrder-1]) newResponseSequence[this.state.pickOrder-1] = undefined;
-
-    // box already has a pick order (response includes boxid)
-    if (newResponseSequence.includes(box)) newResponseSequence[newResponseSequence.indexOf(box)] = undefined;
-
-    newResponseSequence[this.state.pickOrder-1] = box;
-    this.setState({ responseSequence: newResponseSequence });
-
-    if (newResponseSequence[this.state.pickOrder] || this.state.pickOrder+1 > this.state.sequence.length) newPickOrder = newResponseSequence.indexOf(undefined);
-    if (newPickOrder === -1) this.setPickOrder({ pickOrder: undefined });
-    else this.setPickOrder(newPickOrder+1);
-
-    if (newResponseSequence.filter(g => !!g).length === this.state.sequence.length) this.setState({ gameState: 'picked' });
+    this.setState({
+      gameState: 'picked',
+      response: box,
+    });
   }
 
   done = () => {
     let newResults = [...this.state.results];
-    let correct = 0;
-    let incorrect = 0;
-    this.state.responseSequence.forEach((guess, i) => {
-      if (this.state.sequence[i] === guess) correct++;
-      else incorrect++;
-    });
+    let correct = (this.state.response === this.state.yellowApples[this.state.yellowApples.length-1]);
     newResults.push({
       trial: this.state.currentTrial,
       dateISO: (new Date()).toISOString(),
       sequenceLength: this.state.sequence.length,
-      correct,
-      incorrect,
-      percentage: correct/this.state.sequence.length,
+      correct: (correct ? 'yes' : 'no'),
       sequence: [...this.state.sequence],
-      responseSequence: [...this.state.responseSequence],
+      yellowApples: this.state.yellowApples,
+      response: this.state.response,
     });
     if (this.state.currentTrial === this.state.nrOfTrials) {
       this.setState({
@@ -182,9 +160,9 @@ class AppleYellow extends React.Component {
         showFeedback: this.state.practiceFeedback,
         results: newResults,
         sequence: [],
-        responseSequence: [],
+        yellowApples: [],
+        response: undefined,
         userInputEnabled: false,
-        pickOrder: undefined,
       });
       alert('Finished');
     } else {
@@ -194,9 +172,9 @@ class AppleYellow extends React.Component {
         results: newResults,
         currentTrial: this.state.currentTrial+1,
         sequence: [],
-        responseSequence: [],
+        yellowApples: [],
+        response: undefined,
         userInputEnabled: false,
-        pickOrder: undefined,
       });
     }
   }
@@ -204,30 +182,21 @@ class AppleYellow extends React.Component {
   getBoxClassList = (box) => {
     let classList = ['box'];
     if (box === this.state.currentApple) {
-      classList.push('apple-red');
+      if (this.state.yellowApples.includes(this.state.currentApple)) classList.push('apple-yellow');
+      else classList.push('apple-red');
     } else if (['initial', 'playing', 'completed', 'finished'].includes(this.state.gameState)) {
       classList.push('box-disabled');
     } else {
-      if (this.state.responseSequence.includes(box)) classList.push('box-picked');
+      if (this.state.response === box) classList.push('box-picked');
       else classList.push('box-pickable');
     }
     return classList.join(' ');
-  }
-
-  getPickOrderVariant = (pickOrder) => {
-    const active = (this.state.pickOrder === pickOrder);
-    const picked = (!!this.state.responseSequence[pickOrder-1]);
-    if (active && picked) return 'primary';
-    else if (active && !picked) return 'outline-primary';
-    else if (!active && picked) return 'secondary';
-    else return 'outline-secondary';
   }
 
   render() {
     const settingsEnabled = (this.state.gameState === 'initial');
     const startEnabled = (this.state.gameState === 'initial' || this.state.gameState === 'completed');
     const doneEnabled = (this.state.gameState === 'picked');
-    const response = this.state.responseSequence;
     return (
       <>
         <Modal id="settingsModal" show={this.state.showSettings} onHide={() => this.setState({ showSettings: false })} size="md">
@@ -303,20 +272,16 @@ class AppleYellow extends React.Component {
                     <Col sm="8">{r.correct}</Col>
                   </Row>
                   <Row>
-                    <Col sm="4">Incorrect</Col>
-                    <Col sm="8">{r.incorrect}</Col>
-                  </Row>
-                  <Row>
-                    <Col sm="4">Percentage</Col>
-                    <Col sm="8">{r.percentage}</Col>
-                  </Row>
-                  <Row>
                     <Col sm="4">Sequence</Col>
                     <Col sm="8">{r.sequence.map(x => x < 10 ? ` ${x}` : `${x}`).join(', ')}</Col>
                   </Row>
                   <Row>
+                    <Col sm="4">Yellow apple</Col>
+                    <Col sm="8">{r.yellowApples[r.yellowApples.length-1]}</Col>
+                  </Row>
+                  <Row>
                     <Col sm="4">Response</Col>
-                    <Col sm="8">{r.responseSequence.map(x => x < 10 ? ` ${x}` : `${x}`).join(', ')}</Col>
+                    <Col sm="8">{r.response}</Col>
                   </Row>
                   {i !== this.state.results.length-1 && (<><br /><br /></>)}
                 </div>
@@ -349,13 +314,6 @@ class AppleYellow extends React.Component {
               <Button variant={this.state.gameState === 'finished' ? 'success' : 'outline-dark'} disabled className="mb-2 btn-fat" style={{ width: '50px', height: '39px' }}><b>{this.state.gameState === 'finished' ? 'F' : `T${this.state.currentTrial}`}</b></Button><br />
               {this.state.practiceFeedback && (<><Button variant="info" disabled className="mb-2 btn-fat" style={{ width: '50px', height: '39px' }}><b>P</b></Button><br /></>)}
             </div>
-            <div className="pickorder-btn-group">
-              {Array.from({ length: this.state.nrOfFlashes }).map((_, i) => (
-                <div key={i+1}>
-                  <Button onClick={() => this.setPickOrder(i+1)} variant={this.getPickOrderVariant(i+1)} className="mb-2 btn-fat" style={{ width: '50px', height: '39px' }}><b>{i+1}</b></Button><br />
-                </div>
-              ))}
-            </div>
           </div>
         )}
         <Container className="container-height">
@@ -375,16 +333,16 @@ class AppleYellow extends React.Component {
           </Row>
           <Row className="rows-6">
             <Col className="box-container">
-              <div id="1" onClick={() => this.handleBoxClick(1)} className={this.getBoxClassList(1)}>{response.indexOf(1) !== -1 && (response.indexOf(1) + 1)}</div>
+              <div id="1" onClick={() => this.handleBoxClick(1)} className={this.getBoxClassList(1)}>{this.state.response === 1 && 'X'}</div>
             </Col>
             <Col className="box-container">
-              <div id="2" onClick={() => this.handleBoxClick(2)} className={this.getBoxClassList(2)}>{response.indexOf(2) !== -1 && (response.indexOf(2) + 1)}</div>
+              <div id="2" onClick={() => this.handleBoxClick(2)} className={this.getBoxClassList(2)}>{this.state.response === 2 && 'X'}</div>
             </Col>
             <Col className="box-container">
-              <div id="3" onClick={() => this.handleBoxClick(3)} className={this.getBoxClassList(3)}>{response.indexOf(3) !== -1 && (response.indexOf(3) + 1)}</div>
+              <div id="3" onClick={() => this.handleBoxClick(3)} className={this.getBoxClassList(3)}>{this.state.response === 3 && 'X'}</div>
             </Col>
             <Col className="box-container">
-              <div id="4" onClick={() => this.handleBoxClick(4)} className={this.getBoxClassList(4)}>{response.indexOf(4) !== -1 && (response.indexOf(4) + 1)}</div>
+              <div id="4" onClick={() => this.handleBoxClick(4)} className={this.getBoxClassList(4)}>{this.state.response === 4 && 'X'}</div>
             </Col>
           </Row>
           <Row className="rows-6">
@@ -403,16 +361,16 @@ class AppleYellow extends React.Component {
           </Row>
           <Row className="rows-6">
             <Col className="box-container">
-              <div id="5" onClick={() => this.handleBoxClick(5)} className={this.getBoxClassList(5)}>{response.indexOf(5) !== -1 && (response.indexOf(5) + 1)}</div>
+              <div id="5" onClick={() => this.handleBoxClick(5)} className={this.getBoxClassList(5)}>{this.state.response === 5 && 'X'}</div>
             </Col>
             <Col className="box-container">
-              <div id="6" onClick={() => this.handleBoxClick(6)} className={this.getBoxClassList(6)}>{response.indexOf(6) !== -1 && (response.indexOf(6) + 1)}</div>
+              <div id="6" onClick={() => this.handleBoxClick(6)} className={this.getBoxClassList(6)}>{this.state.response === 6 && 'X'}</div>
             </Col>
             <Col className="box-container">
-              <div id="7" onClick={() => this.handleBoxClick(7)} className={this.getBoxClassList(7)}>{response.indexOf(7) !== -1 && (response.indexOf(7) + 1)}</div>
+              <div id="7" onClick={() => this.handleBoxClick(7)} className={this.getBoxClassList(7)}>{this.state.response === 7 && 'X'}</div>
             </Col>
             <Col className="box-container">
-              <div id="8" onClick={() => this.handleBoxClick(8)} className={this.getBoxClassList(8)}>{response.indexOf(8) !== -1 && (response.indexOf(8) + 1)}</div>
+              <div id="8" onClick={() => this.handleBoxClick(8)} className={this.getBoxClassList(8)}>{this.state.response === 8 && 'X'}</div>
             </Col>
           </Row>
           <Row className="rows-6">
@@ -431,16 +389,16 @@ class AppleYellow extends React.Component {
           </Row>
           <Row className="rows-6">
             <Col className="box-container">
-              <div id="9" onClick={() => this.handleBoxClick(9)} className={this.getBoxClassList(9)}>{response.indexOf(9) !== -1 && (response.indexOf(9) + 1)}</div>
+              <div id="9" onClick={() => this.handleBoxClick(9)} className={this.getBoxClassList(9)}>{this.state.response === 9 && 'X'}</div>
             </Col>
             <Col className="box-container">
-              <div id="10" onClick={() => this.handleBoxClick(10)} className={this.getBoxClassList(10)}>{response.indexOf(10) !== -1 && (response.indexOf(10) + 1)}</div>
+              <div id="10" onClick={() => this.handleBoxClick(10)} className={this.getBoxClassList(10)}>{this.state.response === 10 && 'X'}</div>
             </Col>
             <Col className="box-container">
-              <div id="11" onClick={() => this.handleBoxClick(11)} className={this.getBoxClassList(11)}>{response.indexOf(11) !== -1 && (response.indexOf(11) + 1)}</div>
+              <div id="11" onClick={() => this.handleBoxClick(11)} className={this.getBoxClassList(11)}>{this.state.response === 11 && 'X'}</div>
             </Col>
             <Col className="box-container">
-              <div id="12" onClick={() => this.handleBoxClick(12)} className={this.getBoxClassList(12)}>{response.indexOf(12) !== -1 && (response.indexOf(12) + 1)}</div>
+              <div id="12" onClick={() => this.handleBoxClick(12)} className={this.getBoxClassList(12)}>{this.state.response === 12 && 'X'}</div>
             </Col>
           </Row>
         </Container>

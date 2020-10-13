@@ -12,7 +12,8 @@ const defaultSequence = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 class AppleRed extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {          //         |--------------------------------------------|
+    this.state = {
+      testType: 'red',      //         |--------------------------------------------|
       gameState: 'initial', // initial -> playing -> picking -> picked -> completed -> finished
       showMenu: true,
       showSettings: false,
@@ -61,7 +62,8 @@ class AppleRed extends React.Component {
    * UI INTERACTION *
    ******************/
   downloadResults = () => {
-    let csvContent = 'data:text/csv;charset=utf-8,'
+    let csvContent = 'data:text/csv;charset=utf-8,';
+    csvContent += `Test:                       ${this.state.testType}\n`;
     csvContent += `Participant:                ${this.state.participant}\n`;
     csvContent += `Number of rounds:           ${this.state.nrOfTrials}\n`;
     csvContent += `Total duration:             ${this.state.trialDuration}\n`;
@@ -82,7 +84,7 @@ class AppleRed extends React.Component {
     const link = document.createElement('a');
     link.setAttribute('target', '_blank');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `${this.state.participant}_${new Date().toISOString()}.txt`);
+    link.setAttribute('download', `${this.state.participant}_${this.state.testType}_${new Date().toISOString()}.txt`);
     link.click();
     link.remove();
   };
