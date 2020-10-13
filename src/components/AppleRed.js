@@ -51,7 +51,10 @@ class AppleRed extends React.Component {
           let newResponseSequence = [...this.state.responseSequence];
           let index = newResponseSequence.indexOf(i);
           newResponseSequence[index] = undefined;
-          this.setState({ responseSequence: newResponseSequence });
+          this.setState({
+            gameState: 'picking',
+            responseSequence: newResponseSequence,
+          });
           this.setPickOrder(index+1);
         }
       });
