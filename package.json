@@ -38,7 +38,7 @@
     ],
     "productName": "Apples test",
     "win": {
-      "icon": "build/images/app_icon.png",
+      "icon": "build/app_icon.png",
       "target": ["portable"]
     }
   },

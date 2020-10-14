@@ -2,6 +2,23 @@ import React from 'react';
 import { Button, Col, Container, Form, Modal, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { sleep, shuffle } from '../utils';
+import { ReactComponent as Home } from '../assets/icons/home.svg';
+import { ReactComponent as Gear } from '../assets/icons/gear.svg';
+import { ReactComponent as Download } from '../assets/icons/download.svg';
+import { ReactComponent as Play } from '../assets/icons/play.svg';
+import { ReactComponent as Check } from '../assets/icons/check.svg';
+import blueHouse from '../assets/images/blue_house.png';
+import blueCar from '../assets/images/blue_car.png';
+import blueTrain from '../assets/images/blue_train.png';
+import blueBoat from '../assets/images/blue_boat.png';
+import greenHouse from '../assets/images/green_house.png';
+import greenCar from '../assets/images/green_car.png';
+import greenTrain from '../assets/images/green_train.png';
+import greenBoat from '../assets/images/green_boat.png';
+import blackHouse from '../assets/images/black_house.png';
+import blackCar from '../assets/images/black_car.png';
+import blackTrain from '../assets/images/black_train.png';
+import blackBoat from '../assets/images/black_boat.png';
 
 const defaultSequence = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
@@ -229,7 +246,7 @@ class AppleRed extends React.Component {
   getBoxClassList = (box) => {
     let classList = ['box'];
     if (box === this.state.currentApple) {
-      classList.push('apple-red');
+      classList.push('red-apple');
     } else if (['initial', 'playing', 'completed', 'finished'].includes(this.state.gameState)) {
       classList.push('box-disabled');
     } else {
@@ -355,20 +372,20 @@ class AppleRed extends React.Component {
             <div className="actions-btn-group">
               <Link to="/">
                 <Button variant="secondary" className="mb-2">
-                  <img src="/icons/home.svg" alt="" title="Home" />
+                  <Home alt="" title="Home" />
                 </Button>
               </Link><br />
               <Button onClick={() => this.setState({ showSettings: true })} variant="secondary" className="mb-2">
-                <img src="/icons/gear.svg" alt="" title="Settings" />
+                <Gear alt="" title="Settings" />
               </Button><br />
               <Button onClick={this.downloadResults} variant="secondary" className="mb-2">
-                <img src="/icons/download.svg" alt="" title="Download" />
+                <Download alt="" title="Download" />
               </Button><br />
               <Button onClick={this.start} disabled={!startEnabled} variant="secondary" className="mb-2">
-                <img src="/icons/play.svg" alt="" title="Start" />
+                <Play alt="" title="Start" />
               </Button><br />
               <Button onClick={this.done} disabled={!doneEnabled} variant="secondary" className="mb-2">
-                <img src="/icons/check.svg" alt="" title="Done" />
+                <Check alt="" title="Done" />
               </Button><br />
               <Button variant={this.state.gameState === 'finished' ? 'success' : 'outline-dark'} disabled className="mb-2 btn-fat" style={{ width: '50px', height: '39px' }}><b>{this.state.gameState === 'finished' ? 'F' : `T${this.state.currentTrial}`}</b></Button><br />
               {this.state.practiceFeedback && (<><Button variant="info" disabled className="mb-2 btn-fat" style={{ width: '50px', height: '39px' }}><b>P</b></Button><br /></>)}
@@ -385,16 +402,16 @@ class AppleRed extends React.Component {
         <Container className="container-height">
           <Row className="rows-6">
             <Col className="img-container">
-              <img src={process.env.PUBLIC_URL + "/images/house_blue.png"} alt="blueHouse" />
+              <img src={blueHouse} alt="blueHouse" />
             </Col>
             <Col className="img-container">
-              <img src={process.env.PUBLIC_URL + "/images/car_blue.png"} alt="blueCar" />
+              <img src={blueCar} alt="blueCar" />
             </Col>
             <Col className="img-container">
-              <img src={process.env.PUBLIC_URL + "/images/train_blue.png"} alt="blueTrain" />
+              <img src={blueTrain} alt="blueTrain" />
             </Col>
             <Col className="img-container">
-              <img src={process.env.PUBLIC_URL + "/images/boat_blue.png"} alt="blueBoat" />
+              <img src={blueBoat} alt="blueBoat" />
             </Col>
           </Row>
           <Row className="rows-6">
@@ -413,16 +430,16 @@ class AppleRed extends React.Component {
           </Row>
           <Row className="rows-6">
             <Col className="img-container">
-              <img src={process.env.PUBLIC_URL + "/images/house_green.png"} alt="greenHouse" />
+              <img src={greenHouse} alt="greenHouse" />
             </Col>
             <Col className="img-container">
-              <img src={process.env.PUBLIC_URL + "/images/car_green.png"} alt="greenCar" />
+              <img src={greenCar} alt="greenCar" />
             </Col>
             <Col className="img-container">
-              <img src={process.env.PUBLIC_URL + "/images/train_green.png"} alt="greenTrain" />
+              <img src={greenTrain} alt="greenTrain" />
             </Col>
             <Col className="img-container">
-              <img src={process.env.PUBLIC_URL + "/images/boat_green.png"} alt="greenBoat" />
+              <img src={greenBoat} alt="greenBoat" />
             </Col>
           </Row>
           <Row className="rows-6">
@@ -441,16 +458,16 @@ class AppleRed extends React.Component {
           </Row>
           <Row className="rows-6">
             <Col className="img-container">
-              <img src={process.env.PUBLIC_URL + "/images/house_black.png"} alt="blackHouse" />
+              <img src={blackHouse} alt="blackHouse" />
             </Col>
             <Col className="img-container">
-              <img src={process.env.PUBLIC_URL + "/images/car_black.png"} alt="blackCar" />
+              <img src={blackCar} alt="blackCar" />
             </Col>
             <Col className="img-container">
-              <img src={process.env.PUBLIC_URL + "/images/train_black.png"} alt="blackTrain" />
+              <img src={blackTrain} alt="blackTrain" />
             </Col>
             <Col className="img-container">
-              <img src={process.env.PUBLIC_URL + "/images/boat_black.png"} alt="blackBoat" />
+              <img src={blackBoat} alt="blackBoat" />
             </Col>
           </Row>
           <Row className="rows-6">

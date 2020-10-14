@@ -99,16 +99,16 @@ img {
   cursor: pointer;
 }
 
-.apple-red {
-  background-image: url('/images/apple_red.png');
+.red-apple {
+  background-image: url('./assets/images/red_apple.png');
   background-color: #fff;
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;
 }
 
-.apple-yellow {
-  background-image: url('/images/apple_yellow.png');
+.yellow-apple {
+  background-image: url('./assets/images/yellow_apple.png');
   background-color: #fff;
   background-position: center;
   background-repeat: no-repeat;
