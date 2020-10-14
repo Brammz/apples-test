@@ -9,7 +9,6 @@ import './App.css';
  * [ ] form validation (trial duration: adjust + message)
  * [ ] random interval calculation
  * [ ] show menu when hovering?
- * [ ] participant name input
  */
 function App() {
   const boxMapping = {

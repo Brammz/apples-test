@@ -52,7 +52,6 @@ class AppleRed extends React.Component {
 
   componentDidMount() {
     document.addEventListener('keypress', (e) => {
-      e.preventDefault();
       if (e.code === 'Space' && e.ctrlKey) this.setState({ showMenu: !this.state.showMenu });
       if (e.code === 'KeyQ') this.logState();
     }, false);
