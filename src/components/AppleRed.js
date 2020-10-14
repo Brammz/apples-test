@@ -93,8 +93,8 @@ class AppleRed extends React.Component {
       csvContent += `correct:         ${result.correct}\n`;
       csvContent += `incorrect:       ${result.incorrect}\n`;
       csvContent += `score:           ${result.score}\n`;
-      csvContent += `sequence:       ${result.sequence.map(x => x < 10 ? ` ${x}` : `${x}`).join(', ')}\n`;
-      csvContent += `response:       ${result.responseSequence.map(x => x < 10 ? ` ${x}` : `${x}`).join(', ')}\n`;
+      csvContent += `sequence:        ${result.sequence.join(',')}\n`;
+      csvContent += `response:        ${result.responseSequence.join(',')}\n`;
     });
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');

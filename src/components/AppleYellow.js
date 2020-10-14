@@ -85,9 +85,9 @@ class AppleYellow extends React.Component {
       csvContent += `TRIAL ${result.trial < 10 ? `${result.trial} ` : `${result.trial}`}         ${result.dateISO}\n`;
       csvContent += `--------------------------------------------------------------\n`;
       csvContent += `correct:         ${result.correct}\n`;
-      csvContent += `sequence:       ${result.sequence.map(x => x < 10 ? ` ${x}` : `${x}`).join(', ')}\n`;
-      csvContent += `yellow apples:  ${result.yellowApples.map(x => x < 10 ? ` ${x}` : `${x}`).join(', ')}\n`;
-      csvContent += `response:       ${result.response}\n`;
+      csvContent += `sequence:        ${result.sequence.join(',')}\n`;
+      csvContent += `yellow apples:   ${result.yellowApples.join(',')}\n`;
+      csvContent += `response:        ${result.response}\n`;
     });
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');

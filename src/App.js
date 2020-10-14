@@ -8,10 +8,9 @@ import './App.css';
 /**
  * [ ] form validation (trial duration: adjust + message)
  * [ ] random interval calculation
- * [ ] scoring algorithm
  * [ ] replace numbers in feedback screen with acronyms
- * [ ] no spacing in sequences on download
  * [ ] show menu when hovering?
+ * [ ] participant name input
  */
 function App() {
   return (
