@@ -5,6 +5,14 @@ import AppleYellow from './components/AppleYellow';
 import Home from './components/Home';
 import './App.css';
 
+/**
+ * [ ] form validation (trial duration: adjust + message)
+ * [ ] random interval calculation
+ * [ ] scoring algorithm
+ * [ ] replace numbers in feedback screen with acronyms
+ * [ ] no spacing in sequences on download
+ * [ ] show menu when hovering?
+ */
 function App() {
   return (
     <div className="App">

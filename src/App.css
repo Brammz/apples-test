@@ -90,12 +90,12 @@ img {
 }
 
 .box-pickable {
-  background-color: #fff;
+  background-color: #e7e7e7;
   cursor: pointer;
 }
 
 .box-picked {
-  background-color: #e7e7e7;
+  background-color: #aaa;
   cursor: pointer;
 }
 

@@ -5,10 +5,6 @@ import { sleep, shuffle } from '../utils';
 
 const defaultSequence = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-/**
- * [ ] form validation (timings)
- * [ ] random interval calculation
- */
 class AppleYellow extends React.Component {
   constructor(props) {
     super(props);
@@ -194,7 +190,6 @@ class AppleYellow extends React.Component {
   }
 
   render() {
-    const settingsEnabled = (this.state.gameState === 'initial');
     const startEnabled = (this.state.gameState === 'initial' || this.state.gameState === 'completed');
     const doneEnabled = (this.state.gameState === 'picked');
     return (
@@ -208,7 +203,7 @@ class AppleYellow extends React.Component {
                 <Form.Group as={Row} controlId="participant">
                   <Form.Label column sm={5}>Participant</Form.Label>
                   <Col sm={7}>
-                    <Form.Control type="text" value={this.state.participant} onChange={(e) => this.setState({ participant: e.target.value })} />
+                    <Form.Control type="text" value={this.state.participant} autoComplete="off" onChange={(e) => this.setState({ participant: e.target.value })} />
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="nrOfTrials">
@@ -232,7 +227,7 @@ class AppleYellow extends React.Component {
                 <Form.Group as={Row} controlId="presentationTime">
                   <Form.Label column sm={5}>Presentation time (ms)</Form.Label>
                   <Col sm={7}>
-                    <Form.Control type="number" min="500" value={this.state.presentationTime} onChange={(e) => this.setState({ presentationTime: Math.max(500, +e.target.value) })} />
+                    <Form.Control type="number" value={this.state.presentationTime} onChange={(e) => this.setState({ presentationTime: Math.max(500, +e.target.value) })} />
                   </Col>
                 </Form.Group>
                 <fieldset>
@@ -299,7 +294,7 @@ class AppleYellow extends React.Component {
                   <img src="/icons/home.svg" alt="" title="Home" />
                 </Button>
               </Link><br />
-              <Button onClick={() => this.setState({ showSettings: true })} disabled={!settingsEnabled} variant="secondary" className="mb-2">
+              <Button onClick={() => this.setState({ showSettings: true })} variant="secondary" className="mb-2">
                 <img src="/icons/gear.svg" alt="" title="Settings" />
               </Button><br />
               <Button onClick={this.downloadResults} variant="secondary" className="mb-2">

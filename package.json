@@ -1,6 +1,8 @@
 {
   "name": "apples-test",
   "version": "0.1.0",
+  "description": "Apples test",
+  "author": "Bram",
   "private": true,
   "main": "public/electron.js",
   "homepage": "./",
@@ -26,15 +28,17 @@
     "app-build": "npm run build && npm run electron-build"
   },
   "build": {
-    "appId": "electron-react-boilerplate",
+    "appId": "apples-test",
+    "directories": {
+      "buildResources": "assets"
+    },
     "files": [
       "build/**/*",
       "node_modules/**/*"
     ],
-    "directories": {
-      "buildResources": "assets"
-    },
+    "productName": "Apples test",
     "win": {
+      "icon": "build/apple_red.png",
       "target": ["portable"]
     }
   },

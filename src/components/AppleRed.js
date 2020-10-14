@@ -5,12 +5,6 @@ import { sleep, shuffle } from '../utils';
 
 const defaultSequence = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-/**
- * [ ] form validation (trial duration: adjust + message)
- * [ ] random interval calculation
- * [ ] scoring algorithm
- * [ ] replace numbers in feedback screen with acronyms
- */
 class AppleRed extends React.Component {
   constructor(props) {
     super(props);
@@ -29,7 +23,7 @@ class AppleRed extends React.Component {
       // https://stackoverflow.com/questions/14959200/dividing-a-number-into-random-unequal-parts
       interstimuliInterval: true, // true = equal, false = random; randomMin = presentationTime, randomMax = timeLeft
       timeBetweenFlashes: undefined,
-      results: [], // [{ trial, dateISO, sequenceLength, correct, wrong, percentage, sequence, responseSequence }]
+      results: [], // [{ trial, dateISO, sequenceLength, correct, wrong, score, sequence, responseSequence }]
       currentTrial: 1,
       sequence: [],
       responseSequence: [],
@@ -81,7 +75,7 @@ class AppleRed extends React.Component {
       csvContent += `--------------------------------------------------------------\n`;
       csvContent += `correct:         ${result.correct}\n`;
       csvContent += `incorrect:       ${result.incorrect}\n`;
-      csvContent += `percentage:      ${result.percentage}\n`;
+      csvContent += `score:           ${result.score}\n`;
       csvContent += `sequence:       ${result.sequence.map(x => x < 10 ? ` ${x}` : `${x}`).join(', ')}\n`;
       csvContent += `response:       ${result.responseSequence.map(x => x < 10 ? ` ${x}` : `${x}`).join(', ')}\n`;
     });
@@ -121,6 +115,30 @@ class AppleRed extends React.Component {
   setPickOrder(i) {
     if (i > this.state.sequence.length) return;
     this.setState({ pickOrder: i });
+  }
+
+  getScore = (seq, res) => {
+    const a = [0, ...seq, 13];
+    const b = [0, ...res, 13];
+    const c = Array.from({ length: a.length }).fill(0);
+    for(let i = 1; i < b.length-1; i++) {
+      if (b[i] === a[i]) {
+        c[i] = 3;
+      } else {
+        let foundIndex = a.indexOf(b[i]);
+        if (foundIndex !== -1) {
+          c[i] = 1;
+          if (b[i-1] === a[foundIndex-1] && b[i+1] === a[foundIndex+1]) {
+            c[i] = c[i] + 2;
+          } else if (b[i-1] === a[foundIndex-1] || b[i+1] === a[foundIndex+1]) {
+            c[i] = c[i] + 1;
+          }
+        } else {
+          c[i] = 0;
+        }
+      }
+    }
+    return +(c.reduce((a, b) => a + b, 0) / (3 * seq.length) * 100).toFixed(1);
   }
 
   /************
@@ -179,7 +197,7 @@ class AppleRed extends React.Component {
       sequenceLength: this.state.sequence.length,
       correct,
       incorrect,
-      percentage: correct/this.state.sequence.length,
+      score: this.getScore([...this.state.sequence], [...this.state.responseSequence]),
       sequence: [...this.state.sequence],
       responseSequence: [...this.state.responseSequence],
     });
@@ -231,7 +249,6 @@ class AppleRed extends React.Component {
   }
 
   render() {
-    const settingsEnabled = true;
     const startEnabled = (this.state.gameState === 'initial' || this.state.gameState === 'completed');
     const doneEnabled = (this.state.gameState === 'picked');
     const response = this.state.responseSequence;
@@ -246,7 +263,7 @@ class AppleRed extends React.Component {
                 <Form.Group as={Row} controlId="participant">
                   <Form.Label column sm={5}>Participant</Form.Label>
                   <Col sm={7}>
-                    <Form.Control type="text" value={this.state.participant} autoComplete="off" onChange={(e) => { this.setState({ participant: 'KAK' }) }} />
+                    <Form.Control type="text" value={this.state.participant} autoComplete="off" onChange={(e) => { this.setState({ participant: e.target.value }) }} />
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="nrOfTrials">
@@ -270,7 +287,7 @@ class AppleRed extends React.Component {
                 <Form.Group as={Row} controlId="presentationTime">
                   <Form.Label column sm={5}>Presentation time (ms)</Form.Label>
                   <Col sm={7}>
-                    <Form.Control type="number" min="500" value={this.state.presentationTime} onChange={(e) => this.setState({ presentationTime: Math.max(500, +e.target.value) })} />
+                    <Form.Control type="number" value={this.state.presentationTime} onChange={(e) => this.setState({ presentationTime: Math.max(500, +e.target.value) })} />
                   </Col>
                 </Form.Group>
                 <fieldset>
@@ -314,8 +331,8 @@ class AppleRed extends React.Component {
                     <Col sm="8">{r.incorrect}</Col>
                   </Row>
                   <Row>
-                    <Col sm="4">Percentage</Col>
-                    <Col sm="8">{r.percentage}</Col>
+                    <Col sm="4">Score</Col>
+                    <Col sm="8">{r.score}</Col>
                   </Row>
                   <Row>
                     <Col sm="4">Sequence</Col>
@@ -341,7 +358,7 @@ class AppleRed extends React.Component {
                   <img src="/icons/home.svg" alt="" title="Home" />
                 </Button>
               </Link><br />
-              <Button onClick={() => this.setState({ showSettings: true })} disabled={!settingsEnabled} variant="secondary" className="mb-2">
+              <Button onClick={() => this.setState({ showSettings: true })} variant="secondary" className="mb-2">
                 <img src="/icons/gear.svg" alt="" title="Settings" />
               </Button><br />
               <Button onClick={this.downloadResults} variant="secondary" className="mb-2">
@@ -368,16 +385,16 @@ class AppleRed extends React.Component {
         <Container className="container-height">
           <Row className="rows-6">
             <Col className="img-container">
-              <img src="/images/house_blue.png" alt="blueHouse" />
+              <img src={process.env.PUBLIC_URL + "/images/house_blue.png"} alt="blueHouse" />
             </Col>
             <Col className="img-container">
-              <img src="/images/car_blue.png" alt="blueCar" />
+              <img src={process.env.PUBLIC_URL + "/images/car_blue.png"} alt="blueCar" />
             </Col>
             <Col className="img-container">
-              <img src="/images/train_blue.png" alt="blueTrain" />
+              <img src={process.env.PUBLIC_URL + "/images/train_blue.png"} alt="blueTrain" />
             </Col>
             <Col className="img-container">
-              <img src="/images/boat_blue.png" alt="blueBoat" />
+              <img src={process.env.PUBLIC_URL + "/images/boat_blue.png"} alt="blueBoat" />
             </Col>
           </Row>
           <Row className="rows-6">
@@ -396,16 +413,16 @@ class AppleRed extends React.Component {
           </Row>
           <Row className="rows-6">
             <Col className="img-container">
-              <img src="/images/house_green.png" alt="greenHouse" />
+              <img src={process.env.PUBLIC_URL + "/images/house_green.png"} alt="greenHouse" />
             </Col>
             <Col className="img-container">
-              <img src="/images/car_green.png" alt="greenCar" />
+              <img src={process.env.PUBLIC_URL + "/images/car_green.png"} alt="greenCar" />
             </Col>
             <Col className="img-container">
-              <img src="/images/train_green.png" alt="greenTrain" />
+              <img src={process.env.PUBLIC_URL + "/images/train_green.png"} alt="greenTrain" />
             </Col>
             <Col className="img-container">
-              <img src="/images/boat_green.png" alt="greenBoat" />
+              <img src={process.env.PUBLIC_URL + "/images/boat_green.png"} alt="greenBoat" />
             </Col>
           </Row>
           <Row className="rows-6">
@@ -424,16 +441,16 @@ class AppleRed extends React.Component {
           </Row>
           <Row className="rows-6">
             <Col className="img-container">
-              <img src="/images/house_black.png" alt="blackHouse" />
+              <img src={process.env.PUBLIC_URL + "/images/house_black.png"} alt="blackHouse" />
             </Col>
             <Col className="img-container">
-              <img src="/images/car_black.png" alt="blackCar" />
+              <img src={process.env.PUBLIC_URL + "/images/car_black.png"} alt="blackCar" />
             </Col>
             <Col className="img-container">
-              <img src="/images/train_black.png" alt="blackTrain" />
+              <img src={process.env.PUBLIC_URL + "/images/train_black.png"} alt="blackTrain" />
             </Col>
             <Col className="img-container">
-              <img src="/images/boat_black.png" alt="blackBoat" />
+              <img src={process.env.PUBLIC_URL + "/images/boat_black.png"} alt="blackBoat" />
             </Col>
           </Row>
           <Row className="rows-6">
