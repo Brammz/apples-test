@@ -6,8 +6,10 @@ import { sleep, shuffle } from '../utils';
 const defaultSequence = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 /**
- * [ ] form validation (timings)
+ * [ ] form validation (trial duration: adjust + message)
  * [ ] random interval calculation
+ * [ ] scoring algorithm
+ * [ ] replace numbers in feedback screen with acronyms
  */
 class AppleRed extends React.Component {
   constructor(props) {
@@ -229,7 +231,7 @@ class AppleRed extends React.Component {
   }
 
   render() {
-    const settingsEnabled = (this.state.gameState === 'initial');
+    const settingsEnabled = true;
     const startEnabled = (this.state.gameState === 'initial' || this.state.gameState === 'completed');
     const doneEnabled = (this.state.gameState === 'picked');
     const response = this.state.responseSequence;
@@ -244,7 +246,7 @@ class AppleRed extends React.Component {
                 <Form.Group as={Row} controlId="participant">
                   <Form.Label column sm={5}>Participant</Form.Label>
                   <Col sm={7}>
-                    <Form.Control type="text" value={this.state.participant} onChange={(e) => this.setState({ participant: e.target.value })} />
+                    <Form.Control type="text" value={this.state.participant} autoComplete="off" onChange={(e) => { this.setState({ participant: 'KAK' }) }} />
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="nrOfTrials">

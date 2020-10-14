@@ -2,11 +2,14 @@
   "name": "apples-test",
   "version": "0.1.0",
   "private": true,
+  "main": "public/electron.js",
+  "homepage": "./",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "bootstrap": "^4.5.2",
+    "electron-is-dev": "^1.2.0",
     "react": "^16.13.1",
     "react-bootstrap": "^1.3.0",
     "react-dom": "^16.13.1",
@@ -17,7 +20,23 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "electron-start": "electron .",
+    "electron-build": "electron-builder",
+    "app-build": "npm run build && npm run electron-build"
+  },
+  "build": {
+    "appId": "electron-react-boilerplate",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "win": {
+      "target": ["portable"]
+    }
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -33,5 +52,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "electron": "^10.1.3",
+    "electron-builder": "^22.9.1"
   }
 }
