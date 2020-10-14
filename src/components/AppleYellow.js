@@ -285,15 +285,15 @@ class AppleYellow extends React.Component {
                   </Row>
                   <Row>
                     <Col sm="4">Sequence</Col>
-                    <Col sm="8">{r.sequence.map(x => x < 10 ? ` ${x}` : `${x}`).join(', ')}</Col>
+                    <Col sm="8">{r.sequence.map(x => this.props.boxMapping[x]).join(', ')}</Col>
                   </Row>
                   <Row>
                     <Col sm="4">Yellow apple</Col>
-                    <Col sm="8">{r.yellowApples[r.yellowApples.length-1]}</Col>
+                    <Col sm="8">{this.props.boxMapping[r.yellowApples[r.yellowApples.length-1]]}</Col>
                   </Row>
                   <Row>
                     <Col sm="4">Response</Col>
-                    <Col sm="8">{r.response}</Col>
+                    <Col sm="8">{this.props.boxMapping[r.response]}</Col>
                   </Row>
                   {i !== this.state.results.length-1 && (<><br /><br /></>)}
                 </div>

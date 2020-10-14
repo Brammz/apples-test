@@ -8,20 +8,34 @@ import './App.css';
 /**
  * [ ] form validation (trial duration: adjust + message)
  * [ ] random interval calculation
- * [ ] replace numbers in feedback screen with acronyms
  * [ ] show menu when hovering?
  * [ ] participant name input
  */
 function App() {
+  const boxMapping = {
+    1: 'BH',
+    2: 'BA',
+    3: 'BT',
+    4: 'BB',
+    5: 'GH',
+    6: 'GA',
+    7: 'GT',
+    8: 'GB',
+    9: 'ZH',
+    10: 'ZA',
+    11: 'ZT',
+    12: 'ZB',
+  };
+
   return (
     <div className="App">
       <Router>
         <Switch>
           <Route path="/red">
-            <AppleRed />
+            <AppleRed boxMapping={boxMapping} />
           </Route>
           <Route path="/yellow">
-            <AppleYellow />
+            <AppleYellow boxMapping={boxMapping} />
           </Route>
           <Route path="/">
             <Home />

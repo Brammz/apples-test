@@ -353,11 +353,11 @@ class AppleRed extends React.Component {
                   </Row>
                   <Row>
                     <Col sm="4">Sequence</Col>
-                    <Col sm="8">{r.sequence.map(x => x < 10 ? ` ${x}` : `${x}`).join(', ')}</Col>
+                    <Col sm="8">{r.sequence.map(x => this.props.boxMapping[x]).join(', ')}</Col>
                   </Row>
                   <Row>
                     <Col sm="4">Response</Col>
-                    <Col sm="8">{r.responseSequence.map(x => x < 10 ? ` ${x}` : `${x}`).join(', ')}</Col>
+                    <Col sm="8">{r.responseSequence.map(x => this.props.boxMapping[x]).join(', ')}</Col>
                   </Row>
                   {i !== this.state.results.length-1 && (<><br /><br /></>)}
                 </div>
