@@ -34,9 +34,11 @@ class AppleRed extends React.Component {
       showFeedback: false,
       participant: 'Name',
       nrOfTrials: 3,
-      trialDuration: 10, // seconds
       nrOfFlashes: 5,
       presentationTime: 500, // milliseconds
+      trialDuration: 10, // seconds
+      trialDurationMin: 10, // minimum trial duration for nrOfFlashes and presentationTime
+      trialDurationError: false, // error shown when trialDuration is under minimum
       // https://stackoverflow.com/questions/14959200/dividing-a-number-into-random-unequal-parts
       interstimuliInterval: true, // true = equal, false = random; randomMin = presentationTime, randomMax = timeLeft
       timeBetweenFlashes: undefined,
@@ -76,6 +78,41 @@ class AppleRed extends React.Component {
   /******************
    * UI INTERACTION *
    ******************/
+  updateSetting = (e) => {
+    if (e.target.id === 'participant') {
+      this.setState({ [e.target.id]: e.target.value });
+    } else if (e.target.id === 'nrOfTrials') {
+      this.setState({ nrOfTrials: Math.max(1, +e.target.value) });
+    } else if (e.target.id === 'nrOfFlashes' || e.target.id === 'presentationTime' || e.target.id === 'trialDuration') {
+      const flashes = (e.target.id === 'nrOfFlashes' ? Math.min(12, Math.max(1, +e.target.value)) : this.state.nrOfFlashes);
+      const present = (e.target.id === 'presentationTime' ? Math.max(500, +e.target.value) : this.state.presentationTime);
+      const duration = (e.target.id === 'trialDuration' ? Math.max(4, +e.target.value) : this.state.trialDuration);
+      const minDuration = Math.ceil((flashes*present/1000) + (flashes - 1) + 2 + 1);
+
+      if (e.target.id === 'nrOfFlashes') this.setState({ nrOfFlashes: flashes });
+      else if (e.target.id === 'presentationTime') this.setState({ presentationTime: present });
+      else if (e.target.id === 'trialDuration') this.setState({ trialDuration: duration });
+
+      if (duration < minDuration) {
+        this.setState({
+          trialDuration: minDuration,
+          trialDurationMin: minDuration,
+          trialDurationError: true,
+        });
+      } else {
+        this.setState({
+          trialDuration: duration,
+          trialDurationMin: minDuration,
+          trialDurationError: false,
+        });
+      }
+    } else if (e.target.name === 'interstimuliInterval') {
+      this.setState({ interstimuliInterval: e.target.id === 'equal' });
+    } else if (e.target.id === 'practiceFeedback') {
+      this.setState({ practiceFeedback: e.target.checked });
+    }
+  }
+
   downloadResults = () => {
     let csvContent = 'data:text/csv;charset=utf-8,';
     csvContent += `Test:                       ${this.state.testType}\n`;
@@ -279,46 +316,47 @@ class AppleRed extends React.Component {
                 <Form.Group as={Row} controlId="participant">
                   <Form.Label column sm={5}>Participant</Form.Label>
                   <Col sm={7}>
-                    <Form.Control type="text" value={this.state.participant} autoComplete="off" onChange={(e) => { this.setState({ participant: e.target.value }) }} />
+                    <Form.Control type="text" value={this.state.participant} autoComplete="off" onChange={this.updateSetting} />
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="nrOfTrials">
                   <Form.Label column sm={5}>Number of trials</Form.Label>
                   <Col sm={7}>
-                    <Form.Control type="number" value={this.state.nrOfTrials} onChange={(e) => this.setState({ nrOfTrials: Math.max(1, +e.target.value) })} />
-                  </Col>
-                </Form.Group>
-                <Form.Group as={Row} controlId="trialDuration">
-                  <Form.Label column sm={5}>Trial duration (s)</Form.Label>
-                  <Col sm={7}>
-                    <Form.Control type="number" value={this.state.trialDuration} onChange={(e) => this.setState({ trialDuration: Math.max(4, +e.target.value) })} />
+                    <Form.Control type="number" value={this.state.nrOfTrials} onChange={this.updateSetting} />
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="nrOfFlashes">
                   <Form.Label column sm={5}>Number of apples</Form.Label>
                   <Col sm={7}>
-                    <Form.Control type="number" value={this.state.nrOfFlashes} onChange={(e) => this.setState({ nrOfFlashes: Math.min(12, Math.max(1, +e.target.value)) })} />
+                    <Form.Control type="number" value={this.state.nrOfFlashes} onChange={this.updateSetting} />
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="presentationTime">
                   <Form.Label column sm={5}>Presentation time (ms)</Form.Label>
                   <Col sm={7}>
-                    <Form.Control type="number" value={this.state.presentationTime} onChange={(e) => this.setState({ presentationTime: Math.max(500, +e.target.value) })} />
+                    <Form.Control type="number" value={this.state.presentationTime} onChange={this.updateSetting} />
+                  </Col>
+                </Form.Group>
+                <Form.Group as={Row} controlId="trialDuration">
+                  <Form.Label column sm={5}>Trial duration (s)</Form.Label>
+                  <Col sm={7}>
+                    <Form.Control type="number" value={this.state.trialDuration} onChange={this.updateSetting} />
+                    {this.state.trialDurationError && <span style={{ color: 'red'}}>Trial duration set to {this.state.trialDurationMin}</span>}
                   </Col>
                 </Form.Group>
                 <fieldset>
                   <Form.Group as={Row}>
                     <Form.Label as="legend" column sm={5}>Interstimuli interval</Form.Label>
                     <Col sm={7}>
-                      <Form.Check type="radio" name="interstimuliInterval" id="equal" label="Equal" checked={this.state.interstimuliInterval} onChange={(e) => this.setState({ interstimuliInterval: true })} />
-                      <Form.Check type="radio" name="interstimuliInterval" id="random" label="Random" checked={!this.state.interstimuliInterval} onChange={(e) => this.setState({ interstimuliInterval: false })} />
+                      <Form.Check type="radio" name="interstimuliInterval" id="equal" label="Equal" checked={this.state.interstimuliInterval} onChange={this.updateSetting} />
+                      <Form.Check type="radio" name="interstimuliInterval" id="random" label="Random" checked={!this.state.interstimuliInterval} onChange={this.updateSetting} />
                     </Col>
                   </Form.Group>
                 </fieldset>
                 <Form.Group as={Row} controlId="practiceFeedback">
                   <Form.Label as="legend" column sm={5}>Practice</Form.Label>
                   <Col sm={7} className="p-2 pl-3">
-                    <Form.Check type="checkbox" id="feedback" label="Feedback" checked={this.state.practiceFeedback} onChange={(e) =>  this.setState({ practiceFeedback: e.target.checked })} />
+                    <Form.Check type="checkbox" id="practiceFeedback" label="Feedback" checked={this.state.practiceFeedback} onChange={this.updateSetting} />
                   </Col>
                 </Form.Group>
               </Form>

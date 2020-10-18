@@ -6,7 +6,6 @@ import Home from './components/Home';
 import './App.css';
 
 /**
- * [ ] form validation (trial duration: adjust + message)
  * [ ] random interval calculation
  * [ ] show menu when hovering?
  */
