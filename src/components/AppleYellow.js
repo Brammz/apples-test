@@ -327,7 +327,7 @@ class AppleYellow extends React.Component {
             </div>
           </div>
         )}
-        <Container className="container-height">
+        <Container className="container-extra">
           <Row className="rows-6">
             <Col className="img-container">
               <img src={blueHouse} alt="blueHouse" />
