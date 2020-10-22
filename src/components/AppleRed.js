@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Col, Container, Form, Modal, Row } from 'react-bootstrap';
+import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { sleep, shuffle } from '../utils';
 import { ReactComponent as Home } from '../assets/icons/home.svg';
@@ -436,92 +436,94 @@ class AppleRed extends React.Component {
             </div>
           </div>
         )}
-        <Container className="container-extra">
-          <Row className="rows-6">
-            <Col className="img-container">
-              <img src={blueHouse} alt="blueHouse" />
-            </Col>
-            <Col className="img-container">
-              <img src={blueCar} alt="blueCar" />
-            </Col>
-            <Col className="img-container">
-              <img src={blueTrain} alt="blueTrain" />
-            </Col>
-            <Col className="img-container">
-              <img src={blueBoat} alt="blueBoat" />
-            </Col>
-          </Row>
-          <Row className="rows-6">
-            <Col className="box-container">
-              <div id="1" onClick={() => this.handleBoxClick(1)} className={this.getBoxClassList(1)}>{response.indexOf(1) !== -1 && (response.indexOf(1) + 1)}</div>
-            </Col>
-            <Col className="box-container">
-              <div id="2" onClick={() => this.handleBoxClick(2)} className={this.getBoxClassList(2)}>{response.indexOf(2) !== -1 && (response.indexOf(2) + 1)}</div>
-            </Col>
-            <Col className="box-container">
-              <div id="3" onClick={() => this.handleBoxClick(3)} className={this.getBoxClassList(3)}>{response.indexOf(3) !== -1 && (response.indexOf(3) + 1)}</div>
-            </Col>
-            <Col className="box-container">
-              <div id="4" onClick={() => this.handleBoxClick(4)} className={this.getBoxClassList(4)}>{response.indexOf(4) !== -1 && (response.indexOf(4) + 1)}</div>
-            </Col>
-          </Row>
-          <Row className="rows-6">
-            <Col className="img-container">
-              <img src={greenHouse} alt="greenHouse" />
-            </Col>
-            <Col className="img-container">
-              <img src={greenCar} alt="greenCar" />
-            </Col>
-            <Col className="img-container">
-              <img src={greenTrain} alt="greenTrain" />
-            </Col>
-            <Col className="img-container">
-              <img src={greenBoat} alt="greenBoat" />
-            </Col>
-          </Row>
-          <Row className="rows-6">
-            <Col className="box-container">
-              <div id="5" onClick={() => this.handleBoxClick(5)} className={this.getBoxClassList(5)}>{response.indexOf(5) !== -1 && (response.indexOf(5) + 1)}</div>
-            </Col>
-            <Col className="box-container">
-              <div id="6" onClick={() => this.handleBoxClick(6)} className={this.getBoxClassList(6)}>{response.indexOf(6) !== -1 && (response.indexOf(6) + 1)}</div>
-            </Col>
-            <Col className="box-container">
-              <div id="7" onClick={() => this.handleBoxClick(7)} className={this.getBoxClassList(7)}>{response.indexOf(7) !== -1 && (response.indexOf(7) + 1)}</div>
-            </Col>
-            <Col className="box-container">
-              <div id="8" onClick={() => this.handleBoxClick(8)} className={this.getBoxClassList(8)}>{response.indexOf(8) !== -1 && (response.indexOf(8) + 1)}</div>
-            </Col>
-          </Row>
-          <Row className="rows-6">
-            <Col className="img-container">
-              <img src={blackHouse} alt="blackHouse" />
-            </Col>
-            <Col className="img-container">
-              <img src={blackCar} alt="blackCar" />
-            </Col>
-            <Col className="img-container">
-              <img src={blackTrain} alt="blackTrain" />
-            </Col>
-            <Col className="img-container">
-              <img src={blackBoat} alt="blackBoat" />
-            </Col>
-          </Row>
-          <Row className="rows-6">
-            <Col className="box-container">
-              <div id="9" onClick={() => this.handleBoxClick(9)} className={this.getBoxClassList(9)}>{response.indexOf(9) !== -1 && (response.indexOf(9) + 1)}</div>
-            </Col>
-            <Col className="box-container">
-              <div id="10" onClick={() => this.handleBoxClick(10)} className={this.getBoxClassList(10)}>{response.indexOf(10) !== -1 && (response.indexOf(10) + 1)}</div>
-            </Col>
-            <Col className="box-container">
-              <div id="11" onClick={() => this.handleBoxClick(11)} className={this.getBoxClassList(11)}>{response.indexOf(11) !== -1 && (response.indexOf(11) + 1)}</div>
-            </Col>
-            <Col className="box-container">
-              <div id="12" onClick={() => this.handleBoxClick(12)} className={this.getBoxClassList(12)}>{response.indexOf(12) !== -1 && (response.indexOf(12) + 1)}</div>
-            </Col>
-          </Row>
-        </Container>
+        <div className="field-container">
+          <div className="field">
+            <Row className="rows-6">
+              <Col className="img-container">
+                <img src={blueHouse} alt="blueHouse" />
+              </Col>
+              <Col className="img-container">
+                <img src={blueCar} alt="blueCar" />
+              </Col>
+              <Col className="img-container">
+                <img src={blueTrain} alt="blueTrain" />
+              </Col>
+              <Col className="img-container">
+                <img src={blueBoat} alt="blueBoat" />
+              </Col>
+            </Row>
+            <Row className="rows-6">
+              <Col className="box-container">
+                <div id="1" onClick={() => this.handleBoxClick(1)} className={this.getBoxClassList(1)}>{response.indexOf(1) !== -1 && (response.indexOf(1) + 1)}</div>
+              </Col>
+              <Col className="box-container">
+                <div id="2" onClick={() => this.handleBoxClick(2)} className={this.getBoxClassList(2)}>{response.indexOf(2) !== -1 && (response.indexOf(2) + 1)}</div>
+              </Col>
+              <Col className="box-container">
+                <div id="3" onClick={() => this.handleBoxClick(3)} className={this.getBoxClassList(3)}>{response.indexOf(3) !== -1 && (response.indexOf(3) + 1)}</div>
+              </Col>
+              <Col className="box-container">
+                <div id="4" onClick={() => this.handleBoxClick(4)} className={this.getBoxClassList(4)}>{response.indexOf(4) !== -1 && (response.indexOf(4) + 1)}</div>
+              </Col>
+            </Row>
+            <Row className="rows-6">
+              <Col className="img-container">
+                <img src={greenHouse} alt="greenHouse" />
+              </Col>
+              <Col className="img-container">
+                <img src={greenCar} alt="greenCar" />
+              </Col>
+              <Col className="img-container">
+                <img src={greenTrain} alt="greenTrain" />
+              </Col>
+              <Col className="img-container">
+                <img src={greenBoat} alt="greenBoat" />
+              </Col>
+            </Row>
+            <Row className="rows-6">
+              <Col className="box-container">
+                <div id="5" onClick={() => this.handleBoxClick(5)} className={this.getBoxClassList(5)}>{response.indexOf(5) !== -1 && (response.indexOf(5) + 1)}</div>
+              </Col>
+              <Col className="box-container">
+                <div id="6" onClick={() => this.handleBoxClick(6)} className={this.getBoxClassList(6)}>{response.indexOf(6) !== -1 && (response.indexOf(6) + 1)}</div>
+              </Col>
+              <Col className="box-container">
+                <div id="7" onClick={() => this.handleBoxClick(7)} className={this.getBoxClassList(7)}>{response.indexOf(7) !== -1 && (response.indexOf(7) + 1)}</div>
+              </Col>
+              <Col className="box-container">
+                <div id="8" onClick={() => this.handleBoxClick(8)} className={this.getBoxClassList(8)}>{response.indexOf(8) !== -1 && (response.indexOf(8) + 1)}</div>
+              </Col>
+            </Row>
+            <Row className="rows-6">
+              <Col className="img-container">
+                <img src={blackHouse} alt="blackHouse" />
+              </Col>
+              <Col className="img-container">
+                <img src={blackCar} alt="blackCar" />
+              </Col>
+              <Col className="img-container">
+                <img src={blackTrain} alt="blackTrain" />
+              </Col>
+              <Col className="img-container">
+                <img src={blackBoat} alt="blackBoat" />
+              </Col>
+            </Row>
+            <Row className="rows-6">
+              <Col className="box-container">
+                <div id="9" onClick={() => this.handleBoxClick(9)} className={this.getBoxClassList(9)}>{response.indexOf(9) !== -1 && (response.indexOf(9) + 1)}</div>
+              </Col>
+              <Col className="box-container">
+                <div id="10" onClick={() => this.handleBoxClick(10)} className={this.getBoxClassList(10)}>{response.indexOf(10) !== -1 && (response.indexOf(10) + 1)}</div>
+              </Col>
+              <Col className="box-container">
+                <div id="11" onClick={() => this.handleBoxClick(11)} className={this.getBoxClassList(11)}>{response.indexOf(11) !== -1 && (response.indexOf(11) + 1)}</div>
+              </Col>
+              <Col className="box-container">
+                <div id="12" onClick={() => this.handleBoxClick(12)} className={this.getBoxClassList(12)}>{response.indexOf(12) !== -1 && (response.indexOf(12) + 1)}</div>
+              </Col>
+            </Row>
+          </div>
+        </div>
       </>
     );
   }

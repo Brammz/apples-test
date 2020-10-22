@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Col, Container, Form, Modal, Row } from 'react-bootstrap';
+import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { sleep, shuffle } from '../utils';
 import { ReactComponent as Home } from '../assets/icons/home.svg';
@@ -365,92 +365,94 @@ class AppleYellow extends React.Component {
             </div>
           </div>
         )}
-        <Container className="container-extra">
-          <Row className="rows-6">
-            <Col className="img-container">
-              <img src={blueHouse} alt="blueHouse" />
-            </Col>
-            <Col className="img-container">
-              <img src={blueCar} alt="blueCar" />
-            </Col>
-            <Col className="img-container">
-              <img src={blueTrain} alt="blueTrain" />
-            </Col>
-            <Col className="img-container">
-              <img src={blueBoat} alt="blueBoat" />
-            </Col>
-          </Row>
-          <Row className="rows-6">
-            <Col className="box-container">
-              <div id="1" onClick={() => this.handleBoxClick(1)} className={this.getBoxClassList(1)}>{this.state.response === 1 && 'X'}</div>
-            </Col>
-            <Col className="box-container">
-              <div id="2" onClick={() => this.handleBoxClick(2)} className={this.getBoxClassList(2)}>{this.state.response === 2 && 'X'}</div>
-            </Col>
-            <Col className="box-container">
-              <div id="3" onClick={() => this.handleBoxClick(3)} className={this.getBoxClassList(3)}>{this.state.response === 3 && 'X'}</div>
-            </Col>
-            <Col className="box-container">
-              <div id="4" onClick={() => this.handleBoxClick(4)} className={this.getBoxClassList(4)}>{this.state.response === 4 && 'X'}</div>
-            </Col>
-          </Row>
-          <Row className="rows-6">
-            <Col className="img-container">
-              <img src={greenHouse} alt="greenHouse" />
-            </Col>
-            <Col className="img-container">
-              <img src={greenCar} alt="greenCar" />
-            </Col>
-            <Col className="img-container">
-              <img src={greenTrain} alt="greenTrain" />
-            </Col>
-            <Col className="img-container">
-              <img src={greenBoat} alt="greenBoat" />
-            </Col>
-          </Row>
-          <Row className="rows-6">
-            <Col className="box-container">
-              <div id="5" onClick={() => this.handleBoxClick(5)} className={this.getBoxClassList(5)}>{this.state.response === 5 && 'X'}</div>
-            </Col>
-            <Col className="box-container">
-              <div id="6" onClick={() => this.handleBoxClick(6)} className={this.getBoxClassList(6)}>{this.state.response === 6 && 'X'}</div>
-            </Col>
-            <Col className="box-container">
-              <div id="7" onClick={() => this.handleBoxClick(7)} className={this.getBoxClassList(7)}>{this.state.response === 7 && 'X'}</div>
-            </Col>
-            <Col className="box-container">
-              <div id="8" onClick={() => this.handleBoxClick(8)} className={this.getBoxClassList(8)}>{this.state.response === 8 && 'X'}</div>
-            </Col>
-          </Row>
-          <Row className="rows-6">
-            <Col className="img-container">
-              <img src={blackHouse} alt="blackHouse" />
-            </Col>
-            <Col className="img-container">
-              <img src={blackCar} alt="blackCar" />
-            </Col>
-            <Col className="img-container">
-              <img src={blackTrain} alt="blackTrain" />
-            </Col>
-            <Col className="img-container">
-              <img src={blackBoat} alt="blackBoat" />
-            </Col>
-          </Row>
-          <Row className="rows-6">
-            <Col className="box-container">
-              <div id="9" onClick={() => this.handleBoxClick(9)} className={this.getBoxClassList(9)}>{this.state.response === 9 && 'X'}</div>
-            </Col>
-            <Col className="box-container">
-              <div id="10" onClick={() => this.handleBoxClick(10)} className={this.getBoxClassList(10)}>{this.state.response === 10 && 'X'}</div>
-            </Col>
-            <Col className="box-container">
-              <div id="11" onClick={() => this.handleBoxClick(11)} className={this.getBoxClassList(11)}>{this.state.response === 11 && 'X'}</div>
-            </Col>
-            <Col className="box-container">
-              <div id="12" onClick={() => this.handleBoxClick(12)} className={this.getBoxClassList(12)}>{this.state.response === 12 && 'X'}</div>
-            </Col>
-          </Row>
-        </Container>
+        <div className="field-container">
+          <div className="field">
+            <Row className="rows-6">
+              <Col className="img-container">
+                <img src={blueHouse} alt="blueHouse" />
+              </Col>
+              <Col className="img-container">
+                <img src={blueCar} alt="blueCar" />
+              </Col>
+              <Col className="img-container">
+                <img src={blueTrain} alt="blueTrain" />
+              </Col>
+              <Col className="img-container">
+                <img src={blueBoat} alt="blueBoat" />
+              </Col>
+            </Row>
+            <Row className="rows-6">
+              <Col className="box-container">
+                <div id="1" onClick={() => this.handleBoxClick(1)} className={this.getBoxClassList(1)}>{this.state.response === 1 && 'X'}</div>
+              </Col>
+              <Col className="box-container">
+                <div id="2" onClick={() => this.handleBoxClick(2)} className={this.getBoxClassList(2)}>{this.state.response === 2 && 'X'}</div>
+              </Col>
+              <Col className="box-container">
+                <div id="3" onClick={() => this.handleBoxClick(3)} className={this.getBoxClassList(3)}>{this.state.response === 3 && 'X'}</div>
+              </Col>
+              <Col className="box-container">
+                <div id="4" onClick={() => this.handleBoxClick(4)} className={this.getBoxClassList(4)}>{this.state.response === 4 && 'X'}</div>
+              </Col>
+            </Row>
+            <Row className="rows-6">
+              <Col className="img-container">
+                <img src={greenHouse} alt="greenHouse" />
+              </Col>
+              <Col className="img-container">
+                <img src={greenCar} alt="greenCar" />
+              </Col>
+              <Col className="img-container">
+                <img src={greenTrain} alt="greenTrain" />
+              </Col>
+              <Col className="img-container">
+                <img src={greenBoat} alt="greenBoat" />
+              </Col>
+            </Row>
+            <Row className="rows-6">
+              <Col className="box-container">
+                <div id="5" onClick={() => this.handleBoxClick(5)} className={this.getBoxClassList(5)}>{this.state.response === 5 && 'X'}</div>
+              </Col>
+              <Col className="box-container">
+                <div id="6" onClick={() => this.handleBoxClick(6)} className={this.getBoxClassList(6)}>{this.state.response === 6 && 'X'}</div>
+              </Col>
+              <Col className="box-container">
+                <div id="7" onClick={() => this.handleBoxClick(7)} className={this.getBoxClassList(7)}>{this.state.response === 7 && 'X'}</div>
+              </Col>
+              <Col className="box-container">
+                <div id="8" onClick={() => this.handleBoxClick(8)} className={this.getBoxClassList(8)}>{this.state.response === 8 && 'X'}</div>
+              </Col>
+            </Row>
+            <Row className="rows-6">
+              <Col className="img-container">
+                <img src={blackHouse} alt="blackHouse" />
+              </Col>
+              <Col className="img-container">
+                <img src={blackCar} alt="blackCar" />
+              </Col>
+              <Col className="img-container">
+                <img src={blackTrain} alt="blackTrain" />
+              </Col>
+              <Col className="img-container">
+                <img src={blackBoat} alt="blackBoat" />
+              </Col>
+            </Row>
+            <Row className="rows-6">
+              <Col className="box-container">
+                <div id="9" onClick={() => this.handleBoxClick(9)} className={this.getBoxClassList(9)}>{this.state.response === 9 && 'X'}</div>
+              </Col>
+              <Col className="box-container">
+                <div id="10" onClick={() => this.handleBoxClick(10)} className={this.getBoxClassList(10)}>{this.state.response === 10 && 'X'}</div>
+              </Col>
+              <Col className="box-container">
+                <div id="11" onClick={() => this.handleBoxClick(11)} className={this.getBoxClassList(11)}>{this.state.response === 11 && 'X'}</div>
+              </Col>
+              <Col className="box-container">
+                <div id="12" onClick={() => this.handleBoxClick(12)} className={this.getBoxClassList(12)}>{this.state.response === 12 && 'X'}</div>
+              </Col>
+            </Row>
+          </div>
+        </div>
       </>
     );
   }
