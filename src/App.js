@@ -6,7 +6,6 @@ import Home from './components/Home';
 import './App.css';
 
 /**
- * [ ] random interval calculation
  * [ ] download: show times each apple appeared
  * [ ] show menu when hovering?
  */

@@ -39,7 +39,6 @@ class AppleYellow extends React.Component {
       trialDuration: 10, // seconds
       trialDurationMin: 10, // minimum trial duration for nrOfFlashes and presentationTime
       trialDurationError: false, // error shown when trialDuration is under minimum
-      // https://stackoverflow.com/questions/14959200/dividing-a-number-into-random-unequal-parts
       interstimuliInterval: true, // true = equal, false = random; randomMin = presentationTime, randomMax = timeLeft
       timeBetweenFlashes: undefined,
       results: [], // [{ trial, dateISO, sequenceLength, correct, sequence, yellowApples, response }]
@@ -112,7 +111,7 @@ class AppleYellow extends React.Component {
     csvContent += `Test:                       ${this.state.testType}\n`;
     csvContent += `Participant:                ${this.state.participant}\n`;
     csvContent += `Number of rounds:           ${this.state.nrOfTrials}\n`;
-    csvContent += `Total duration:             ${this.state.trialDuration}\n`;
+    csvContent += `Trial duration:             ${this.state.trialDuration}\n`;
     csvContent += `Number of apples:           ${this.state.nrOfFlashes}\n`;
     csvContent += `Presentation duration:      ${this.state.presentationTime}\n`;
     csvContent += `Interval:                   ${this.state.interstimuliInterval ? 'equal' : 'random'}\n`;
@@ -148,14 +147,44 @@ class AppleYellow extends React.Component {
     Array.from({ length: 12 }).forEach((_, i) => func(i+1));
   }
 
+  // https://stackoverflow.com/a/51293940/4725211
+  distributeAmountInParts = (amount, parts, min = 0) => {
+    let results = [];
+    let current = 1;
+    let balance = amount;
+  
+    for (let i = 0; i<parts-1; i++) {
+        // max num for this spot
+        let max = balance - ((parts-current)*min);
+        // to avoid big numbers in the beginning and min numbers at the end
+        if (Math.random() > 0.5) { // 0.5 can be tuned to your liking
+          max = Math.floor(max / 2) + min;
+        }
+        // generate the number for the spot at 'count'
+        let num = Math.floor(Math.random()*(max-min+1)+min);
+        // adjust balances
+        balance -= num;
+        current++;
+        // store this number
+        results.push(num);
+    }
+    // push remaining balance into the last spot
+    results.push(balance);
+    // return
+    return results;
+  }
+
   playSequence = async () => {
     await sleep(2000);
-    for (let flash of this.state.sequence) {
-      this.setState({ currentApple: flash });
+    for (let i = 0; i < this.state.sequence.length; i++) {
+      this.setState({ currentApple: this.state.sequence[i] });
       await sleep(this.state.presentationTime);
       this.setState({ currentApple: undefined });
-      await sleep((this.state.interstimuliInterval ? this.state.timeBetweenFlashes : this.state.timeBetweenFlashes()) * 1000);
+      if (i !== this.state.sequence.length-1) {
+        await sleep(this.state.interstimuliInterval ? this.state.timeBetweenFlashes : this.state.timeBetweenFlashes[i]);
+      }
     };
+    await sleep(1000);
   }
 
   /************
@@ -171,8 +200,8 @@ class AppleYellow extends React.Component {
     this.setState({
       gameState: 'playing',
       timeBetweenFlashes: this.state.interstimuliInterval
-        ? (this.state.trialDuration - 2 - 1 - (this.state.nrOfFlashes*this.state.presentationTime/1000)) / (this.state.nrOfFlashes - 1)
-        : () => { return 5 },
+      ? ((this.state.trialDuration-2-1-(this.state.nrOfFlashes*this.state.presentationTime/1000)) / (this.state.nrOfFlashes-1))*1000
+      : this.distributeAmountInParts((this.state.trialDuration-2-1)*1000, this.state.nrOfFlashes-1, this.state.presentationTime),
       sequence: sequence,
       yellowApples: yellowApples,
     });
