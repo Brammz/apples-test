@@ -200,7 +200,7 @@ class AppleYellow extends React.Component {
       sequenceLength: this.state.sequence.length,
       correct: (correct ? 'yes' : 'no'),
       sequence: [...this.state.sequence],
-      yellowApples: this.state.yellowApples,
+      yellowApples: [...this.state.yellowApples],
       response: this.state.response,
     });
     if (this.state.currentTrial === this.state.nrOfTrials) {
@@ -310,15 +310,11 @@ class AppleYellow extends React.Component {
               <Modal.Title>Feedback</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              {this.state.results.map((r, i) => (
+              {this.state.results.sort((a,b) => a.trial > b.trial ? -1 : 1).map((r, i) => (
                 <div key={i}>
                   <Row>
                     <Col sm="4">Trial</Col>
                     <Col sm="8">{r.trial}</Col>
-                  </Row>
-                  <Row>
-                    <Col sm="4">Correct</Col>
-                    <Col sm="8">{r.correct}</Col>
                   </Row>
                   <Row>
                     <Col sm="4">Sequence</Col>

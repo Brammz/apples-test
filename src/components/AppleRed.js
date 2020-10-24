@@ -370,19 +370,11 @@ class AppleRed extends React.Component {
               <Modal.Title>Feedback</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              {this.state.results.map((r, i) => (
+              {this.state.results.sort((a,b) => a.trial > b.trial ? -1 : 1).map((r, i) => (
                 <div key={i}>
                   <Row>
                     <Col sm="4">Trial</Col>
                     <Col sm="8">{r.trial}</Col>
-                  </Row>
-                  <Row>
-                    <Col sm="4">Correct</Col>
-                    <Col sm="8">{r.correct}</Col>
-                  </Row>
-                  <Row>
-                    <Col sm="4">Incorrect</Col>
-                    <Col sm="8">{r.incorrect}</Col>
                   </Row>
                   <Row>
                     <Col sm="4">Score</Col>

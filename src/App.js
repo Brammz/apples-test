@@ -7,6 +7,7 @@ import './App.css';
 
 /**
  * [ ] random interval calculation
+ * [ ] download: show times each apple appeared
  * [ ] show menu when hovering?
  */
 function App() {
