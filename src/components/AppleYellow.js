@@ -43,6 +43,7 @@ class AppleYellow extends React.Component {
       timeBetweenFlashes: undefined,
       results: [], // [{ trial, dateISO, sequenceLength, correct, sequence, yellowApples, response }]
       currentTrial: 1,
+      sequenceTimings: [],
       sequence: [],
       yellowApples: [],
       response: undefined,
@@ -120,6 +121,7 @@ class AppleYellow extends React.Component {
       csvContent += `TRIAL ${result.trial < 10 ? `${result.trial} ` : `${result.trial}`}         ${result.dateISO}\n`;
       csvContent += `--------------------------------------------------------------\n`;
       csvContent += `correct:         ${result.correct}\n`;
+      csvContent += `timings:         ${result.sequenceTimings.join(',')}\n`;
       csvContent += `sequence:        ${result.sequence.join(',')}\n`;
       csvContent += `yellow apples:   ${result.yellowApples.join(',')}\n`;
       csvContent += `response:        ${result.response}\n`;
@@ -175,9 +177,13 @@ class AppleYellow extends React.Component {
   }
 
   playSequence = async () => {
+    const startTimestamp = +(new Date());
+    let newSequenceTimings = [...this.state.sequenceTimings];
     await sleep(2000);
     for (let i = 0; i < this.state.sequence.length; i++) {
-      this.setState({ currentApple: this.state.sequence[i] });
+      this.setState({ currentApple: this.state.sequence[i] }, () => {
+        newSequenceTimings[i] = (+(new Date()) - startTimestamp)/1000;
+      });
       await sleep(this.state.presentationTime);
       this.setState({ currentApple: undefined });
       if (i !== this.state.sequence.length-1) {
@@ -185,6 +191,7 @@ class AppleYellow extends React.Component {
       }
     };
     await sleep(1000);
+    this.setState({ sequenceTimings: newSequenceTimings });
   }
 
   /************
@@ -202,6 +209,7 @@ class AppleYellow extends React.Component {
       timeBetweenFlashes: this.state.interstimuliInterval
       ? ((this.state.trialDuration-2-1-(this.state.nrOfFlashes*this.state.presentationTime/1000)) / (this.state.nrOfFlashes-1))*1000
       : this.distributeAmountInParts((this.state.trialDuration-2-1)*1000, this.state.nrOfFlashes-1, this.state.presentationTime),
+      sequenceTimings: Array.from({ length: this.state.nrOfFlashes }),
       sequence: sequence,
       yellowApples: yellowApples,
     });
@@ -228,6 +236,7 @@ class AppleYellow extends React.Component {
       dateISO: (new Date()).toISOString(),
       sequenceLength: this.state.sequence.length,
       correct: (correct ? 'yes' : 'no'),
+      sequenceTimings: [...this.state.sequenceTimings],
       sequence: [...this.state.sequence],
       yellowApples: [...this.state.yellowApples],
       response: this.state.response,
@@ -237,6 +246,7 @@ class AppleYellow extends React.Component {
         gameState: 'finished',
         showFeedback: this.state.practiceFeedback,
         results: newResults,
+        sequenceTimings: [],
         sequence: [],
         yellowApples: [],
         response: undefined,
@@ -249,6 +259,7 @@ class AppleYellow extends React.Component {
         showFeedback: this.state.practiceFeedback,
         results: newResults,
         currentTrial: this.state.currentTrial+1,
+        sequenceTimings: [],
         sequence: [],
         yellowApples: [],
         response: undefined,

@@ -43,6 +43,7 @@ class AppleRed extends React.Component {
       timeBetweenFlashes: undefined,
       results: [], // [{ trial, dateISO, sequenceLength, correct, wrong, score, sequence, responseSequence }]
       currentTrial: 1,
+      sequenceTimings: [],
       sequence: [],
       responseSequence: [],
       userInputEnabled: false,
@@ -128,6 +129,7 @@ class AppleRed extends React.Component {
       csvContent += `correct:         ${result.correct}\n`;
       csvContent += `incorrect:       ${result.incorrect}\n`;
       csvContent += `score:           ${result.score}\n`;
+      csvContent += `timings:         ${result.sequenceTimings.join(',')}\n`;
       csvContent += `sequence:        ${result.sequence.join(',')}\n`;
       csvContent += `response:        ${result.responseSequence.join(',')}\n`;
     });
@@ -182,9 +184,13 @@ class AppleRed extends React.Component {
   }
 
   playSequence = async () => {
+    const startTimestamp = +(new Date());
+    let newSequenceTimings = [...this.state.sequenceTimings];
     await sleep(2000);
     for (let i = 0; i < this.state.sequence.length; i++) {
-      this.setState({ currentApple: this.state.sequence[i] });
+      this.setState({ currentApple: this.state.sequence[i] }, () => {
+        newSequenceTimings[i] = (+(new Date()) - startTimestamp)/1000;
+      });
       await sleep(this.state.presentationTime);
       this.setState({ currentApple: undefined });
       if (i !== this.state.sequence.length-1) {
@@ -192,6 +198,7 @@ class AppleRed extends React.Component {
       }
     };
     await sleep(1000);
+    this.setState({ sequenceTimings: newSequenceTimings });
   }
 
   setPickOrder(i) {
@@ -232,6 +239,7 @@ class AppleRed extends React.Component {
       timeBetweenFlashes: this.state.interstimuliInterval
         ? ((this.state.trialDuration-2-1-(this.state.nrOfFlashes*this.state.presentationTime/1000)) / (this.state.nrOfFlashes-1))*1000
         : this.distributeAmountInParts((this.state.trialDuration-2-1)*1000, this.state.nrOfFlashes-1, this.state.presentationTime),
+      sequenceTimings: Array.from({ length: this.state.nrOfFlashes }),
       sequence: shuffle([...defaultSequence]).slice(0, this.state.nrOfFlashes),
       responseSequence: Array.from({ length: this.state.nrOfFlashes }),
     });
@@ -280,6 +288,7 @@ class AppleRed extends React.Component {
       correct,
       incorrect,
       score: this.getScore([...this.state.sequence], [...this.state.responseSequence]),
+      sequenceTimings: [...this.state.sequenceTimings],
       sequence: [...this.state.sequence],
       responseSequence: [...this.state.responseSequence],
     });
@@ -288,6 +297,7 @@ class AppleRed extends React.Component {
         gameState: 'finished',
         showFeedback: this.state.practiceFeedback,
         results: newResults,
+        sequenceTimings: [],
         sequence: [],
         responseSequence: [],
         userInputEnabled: false,
@@ -300,6 +310,7 @@ class AppleRed extends React.Component {
         showFeedback: this.state.practiceFeedback,
         results: newResults,
         currentTrial: this.state.currentTrial+1,
+        sequenceTimings: [],
         sequence: [],
         responseSequence: [],
         userInputEnabled: false,
