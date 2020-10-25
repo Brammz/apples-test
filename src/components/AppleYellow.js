@@ -204,11 +204,13 @@ class AppleYellow extends React.Component {
     if (randomPick !== sequence[sequence.length-1] && Math.floor(Math.random()*2)+1 === 2) {
       yellowApples.push(sequence[sequence.length-1]);
     }
+    let remainingTime = ((this.state.trialDuration-2-1)*1000)-(this.state.nrOfFlashes*this.state.presentationTime);
+    let nrOfPauses = this.state.nrOfFlashes-1;
     this.setState({
       gameState: 'playing',
       timeBetweenFlashes: this.state.interstimuliInterval
-      ? ((this.state.trialDuration-2-1-(this.state.nrOfFlashes*this.state.presentationTime/1000)) / (this.state.nrOfFlashes-1))*1000
-      : this.distributeAmountInParts((this.state.trialDuration-2-1)*1000, this.state.nrOfFlashes-1, this.state.presentationTime),
+      ? remainingTime/nrOfPauses
+      : this.distributeAmountInParts(remainingTime, nrOfPauses, this.state.presentationTime),
       sequenceTimings: Array.from({ length: this.state.nrOfFlashes }),
       sequence: sequence,
       yellowApples: yellowApples,
