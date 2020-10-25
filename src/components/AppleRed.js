@@ -162,11 +162,11 @@ class AppleRed extends React.Component {
     let current = 1;
     let balance = amount;
   
-    for (let i = 0; i<parts-1; i++) {
+    for (let i = 0; i < parts-1; i++) {
         // max num for this spot
         let max = balance - ((parts-current)*min);
         // to avoid big numbers in the beginning and min numbers at the end
-        if (Math.random() > 0.5) { // 0.5 can be tuned to your liking
+        if (i === 0 || Math.random() > 0.5) { // 0.5 can be tuned to your liking
           max = Math.floor(max / 2) + min;
         }
         // generate the number for the spot at 'count'
@@ -180,7 +180,7 @@ class AppleRed extends React.Component {
     // push remaining balance into the last spot
     results.push(balance);
     // return
-    return results;
+    return shuffle(results);
   }
 
   playSequence = async () => {
