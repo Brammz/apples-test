@@ -5,10 +5,6 @@ import AppleYellow from './components/AppleYellow';
 import Home from './components/Home';
 import './App.css';
 
-/**
- * [ ] download: show times each apple appeared
- * [ ] show menu when hovering?
- */
 function App() {
   const boxMapping = {
     1: 'BH',
