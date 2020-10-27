@@ -208,6 +208,7 @@ class AppleYellow extends React.Component {
     let nrOfPauses = this.state.nrOfFlashes-1;
     this.setState({
       gameState: 'playing',
+      showMenu: false,
       timeBetweenFlashes: this.state.interstimuliInterval
       ? remainingTime/nrOfPauses
       : this.distributeAmountInParts(remainingTime, nrOfPauses, this.state.presentationTime),
@@ -218,6 +219,7 @@ class AppleYellow extends React.Component {
     await this.playSequence();
     this.setState({
       gameState: 'picking',
+      showMenu: true,
       userInputEnabled: true,
     });
   }
