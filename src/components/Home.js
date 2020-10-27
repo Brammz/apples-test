@@ -10,7 +10,7 @@ function Home() {
         <Link to="/red">
           <Button variant="danger" size="lg" className="m-3">Red</Button>
         </Link>
-        <Link to="yellow">
+        <Link to="/yellow">
           <Button variant="warning" size="lg" className="m-3">Yellow</Button>
         </Link>
       </div>
