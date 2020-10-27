@@ -85,7 +85,7 @@ class AppleRed extends React.Component {
       this.setState({ nrOfTrials: Math.max(1, +e.target.value) });
     } else if (e.target.id === 'nrOfFlashes' || e.target.id === 'presentationTime' || e.target.id === 'trialDuration') {
       const flashes = (e.target.id === 'nrOfFlashes' ? Math.min(12, Math.max(1, +e.target.value)) : this.state.nrOfFlashes);
-      const present = (e.target.id === 'presentationTime' ? Math.max(500, +e.target.value) : this.state.presentationTime);
+      const present = (e.target.id === 'presentationTime' ? Math.max(100, +e.target.value) : this.state.presentationTime);
       const duration = (e.target.id === 'trialDuration' ? Math.max(4, +e.target.value) : this.state.trialDuration);
       const minDuration = Math.ceil((flashes*present/1000) + (flashes - 1) + 2 + 1);
 

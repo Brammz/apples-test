@@ -26,7 +26,7 @@
     "electron-start": "electron .",
     "electron-build": "electron-builder",
     "app-build": "npm run build && npm run electron-build",
-    "deploy": "gh-pages -d build"
+    "deploy": "npm run build && gh-pages -d build"
   },
   "build": {
     "appId": "apples-test",
