@@ -211,7 +211,7 @@ class AppleYellow extends React.Component {
       showMenu: false,
       timeBetweenFlashes: this.state.interstimuliInterval
       ? remainingTime/nrOfPauses
-      : this.distributeAmountInParts(remainingTime, nrOfPauses, this.state.presentationTime),
+      : this.distributeAmountInParts(remainingTime, nrOfPauses, 1000),
       sequenceTimings: Array.from({ length: this.state.nrOfFlashes }),
       sequence: sequence,
       yellowApples: yellowApples,
