@@ -353,7 +353,7 @@ class AppleRed extends React.Component {
       <>
         <Modal id="settingsModal" show={this.state.showSettings} onHide={() => this.setState({ showSettings: false })} size="md">
             <Modal.Header closeButton>
-              <Modal.Title>Settings</Modal.Title>
+              <Modal.Title>Settings - Red Apple Test</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <Form>
@@ -444,7 +444,7 @@ class AppleRed extends React.Component {
           <div className="menu">
             <div className="actions-btn-group">
               <Link to="/">
-                <Button variant="secondary" className="mb-2">
+                <Button variant="danger" className="mb-2">
                   <Home alt="" title="Home" />
                 </Button>
               </Link><br />
