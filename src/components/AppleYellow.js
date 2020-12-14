@@ -150,31 +150,18 @@ class AppleYellow extends React.Component {
     Array.from({ length: 12 }).forEach((_, i) => func(i+1));
   }
 
-  // https://stackoverflow.com/a/51293940/4725211
-  distributeAmountInParts = (amount, parts, min = 0) => {
-    let results = [];
-    let current = 1;
-    let balance = amount;
-  
-    for (let i = 0; i < parts-1; i++) {
-        // max num for this spot
-        let max = balance - ((parts-current)*min);
-        // to avoid big numbers in the beginning and min numbers at the end
-        if (i === 0 || Math.random() > 0.5) { // 0.5 can be tuned to your liking
-          max = Math.floor(max / 2) + min;
-        }
-        // generate the number for the spot at 'count'
-        let num = Math.floor(Math.random()*(max-min+1)+min);
-        // adjust balances
-        balance -= num;
-        current++;
-        // store this number
-        results.push(num);
+  // https://stackoverflow.com/a/45653118/4725211
+  distributeAmountInParts = (number, parts, min) => {
+    let randombit = number - min * parts;
+    let out = [];
+
+    for (let i = 0; i < parts; i++) {
+      out.push(Math.random());
     }
-    // push remaining balance into the last spot
-    results.push(balance);
-    // return
-    return shuffle(results);
+
+    let mult = randombit / out.reduce((a,b) => a+b);
+
+    return out.map(el => Math.round(el * mult + min));
   }
 
   playSequence = async () => {
