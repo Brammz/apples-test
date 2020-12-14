@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Col, Form, Modal, OverlayTrigger, Popover, Row } from 'react-bootstrap';
+import { Badge, Button, Col, Form, Modal, OverlayTrigger, Popover, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { sleep, shuffle } from '../utils';
 import { ReactComponent as Home } from '../assets/icons/home.svg';
@@ -402,7 +402,7 @@ class AppleYellow extends React.Component {
                     <Popover.Title as="h3">Help</Popover.Title>
                     <Popover.Content>
                       <p>This is the <strong>Yellow Apple</strong> test.</p>
-                      <p>Press <strong>&lt;ctrl&gt;+&lt;space&gt;</strong> to hide all non-essential elements.</p>
+                      <p><Badge variant="secondary">&lt;ctrl&gt;</Badge>+<Badge variant="secondary">&lt;space&gt;</Badge>: show/hide all non-essential elements.</p>
                     </Popover.Content>
                   </Popover>
                 }
