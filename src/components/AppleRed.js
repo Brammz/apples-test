@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
+import { Button, Col, Form, Modal, OverlayTrigger, Popover, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { sleep, shuffle } from '../utils';
 import { ReactComponent as Home } from '../assets/icons/home.svg';
@@ -7,6 +7,7 @@ import { ReactComponent as Gear } from '../assets/icons/gear.svg';
 import { ReactComponent as Download } from '../assets/icons/download.svg';
 import { ReactComponent as Play } from '../assets/icons/play.svg';
 import { ReactComponent as Check } from '../assets/icons/check.svg';
+import { ReactComponent as Question } from '../assets/icons/question.svg';
 import blueHouse from '../assets/images/blue_house.png';
 import blueCar from '../assets/images/blue_car.png';
 import blueTrain from '../assets/images/blue_train.png';
@@ -441,36 +442,55 @@ class AppleRed extends React.Component {
             </Modal.Footer>
         </Modal>
         {this.state.showMenu && (
-          <div className="menu">
-            <div className="actions-btn-group">
-              <Link to="/">
-                <Button variant="danger" className="mb-2">
-                  <Home alt="" title="Home" />
-                </Button>
-              </Link><br />
-              <Button onClick={() => this.setState({ showSettings: true })} variant="secondary" className="mb-2">
-                <Gear alt="" title="Settings" />
-              </Button><br />
-              <Button onClick={this.downloadResults} variant="secondary" className="mb-2">
-                <Download alt="" title="Download" />
-              </Button><br />
-              <Button onClick={this.start} disabled={!startEnabled} variant="secondary" className="mb-2">
-                <Play alt="" title="Start" />
-              </Button><br />
-              <Button onClick={this.done} disabled={!doneEnabled} variant="secondary" className="mb-2">
-                <Check alt="" title="Done" />
-              </Button><br />
-              <Button variant={this.state.gameState === 'finished' ? 'success' : 'outline-dark'} disabled className="mb-2 btn-fat" style={{ width: '50px', height: '39px' }}><b>{this.state.gameState === 'finished' ? 'F' : `T${this.state.currentTrial}`}</b></Button><br />
-              {this.state.practiceFeedback && (<><Button variant="info" disabled className="mb-2 btn-fat" style={{ width: '50px', height: '39px' }}><b>P</b></Button><br /></>)}
+          <>
+            <div className="menu">
+              <div className="actions-btn-group">
+                <Link to="/">
+                  <Button variant="danger" className="mb-2">
+                    <Home alt="" title="Home" />
+                  </Button>
+                </Link><br />
+                <Button onClick={() => this.setState({ showSettings: true })} variant="secondary" className="mb-2">
+                  <Gear alt="" title="Settings" />
+                </Button><br />
+                <Button onClick={this.downloadResults} variant="secondary" className="mb-2">
+                  <Download alt="" title="Download" />
+                </Button><br />
+                <Button onClick={this.start} disabled={!startEnabled} variant="secondary" className="mb-2">
+                  <Play alt="" title="Start" />
+                </Button><br />
+                <Button onClick={this.done} disabled={!doneEnabled} variant="secondary" className="mb-2">
+                  <Check alt="" title="Done" />
+                </Button><br />
+                <Button variant={this.state.gameState === 'finished' ? 'success' : 'outline-dark'} disabled className="mb-2 btn-fat" style={{ width: '50px', height: '39px' }}><b>{this.state.gameState === 'finished' ? 'F' : `T${this.state.currentTrial}`}</b></Button><br />
+                {this.state.practiceFeedback && (<><Button variant="info" disabled className="mb-2 btn-fat" style={{ width: '50px', height: '39px' }}><b>P</b></Button><br /></>)}
+              </div>
+              <div className="pickorder-btn-group">
+                {Array.from({ length: this.state.nrOfFlashes }).map((_, i) => (
+                  <div key={i+1}>
+                    <Button onClick={() => this.setPickOrder(i+1)} variant={this.getPickOrderVariant(i+1)} className="mb-2 btn-fat" style={{ width: '50px', height: '39px' }}><b>{i+1}</b></Button><br />
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="pickorder-btn-group">
-              {Array.from({ length: this.state.nrOfFlashes }).map((_, i) => (
-                <div key={i+1}>
-                  <Button onClick={() => this.setPickOrder(i+1)} variant={this.getPickOrderVariant(i+1)} className="mb-2 btn-fat" style={{ width: '50px', height: '39px' }}><b>{i+1}</b></Button><br />
-                </div>
-              ))}
+            <div className="info">
+              <OverlayTrigger
+                trigger={['hover', 'focus']}
+                placement="top-start"
+                overlay={
+                  <Popover id="info-popover">
+                    <Popover.Title as="h3">Help</Popover.Title>
+                    <Popover.Content>
+                      <p>This is the <strong>Red Apple</strong> test.</p>
+                      <p>Press <strong>&lt;ctrl&gt;+&lt;space&gt;</strong> to hide all non-essential elements.</p>
+                    </Popover.Content>
+                  </Popover>
+                }
+              >
+                <Question alt="" title="" />
+              </OverlayTrigger>
             </div>
-          </div>
+          </>
         )}
         <div className="field-container">
           <div className="field">
