@@ -401,7 +401,7 @@ class AppleYellow extends React.Component {
                   <Popover id="info-popover">
                     <Popover.Title as="h3">Help</Popover.Title>
                     <Popover.Content>
-                      <p>This is the <strong>Yellow Apple</strong> test.</p>
+                      <p>Remember the position of the last yellow apple.</p>
                       <p><Badge variant="secondary">&lt;ctrl&gt;</Badge>+<Badge variant="secondary">&lt;space&gt;</Badge>: show/hide all non-essential elements.</p>
                     </Popover.Content>
                   </Popover>
