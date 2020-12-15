@@ -1,19 +1,19 @@
 {
   "files": {
     "main.css": "/apples-test/static/css/main.34f95f0b.chunk.css",
-    "main.js": "/apples-test/static/js/main.9ca40dca.chunk.js",
-    "main.js.map": "/apples-test/static/js/main.9ca40dca.chunk.js.map",
+    "main.js": "/apples-test/static/js/main.26acebfd.chunk.js",
+    "main.js.map": "/apples-test/static/js/main.26acebfd.chunk.js.map",
     "runtime-main.js": "/apples-test/static/js/runtime-main.d5466fca.js",
     "runtime-main.js.map": "/apples-test/static/js/runtime-main.d5466fca.js.map",
     "static/css/2.8aa5a7f8.chunk.css": "/apples-test/static/css/2.8aa5a7f8.chunk.css",
-    "static/js/2.db535c9f.chunk.js": "/apples-test/static/js/2.db535c9f.chunk.js",
-    "static/js/2.db535c9f.chunk.js.map": "/apples-test/static/js/2.db535c9f.chunk.js.map",
+    "static/js/2.f0831f13.chunk.js": "/apples-test/static/js/2.f0831f13.chunk.js",
+    "static/js/2.f0831f13.chunk.js.map": "/apples-test/static/js/2.f0831f13.chunk.js.map",
     "index.html": "/apples-test/index.html",
-    "precache-manifest.99942c5b258c14ee1aa8d38cf977da2a.js": "/apples-test/precache-manifest.99942c5b258c14ee1aa8d38cf977da2a.js",
+    "precache-manifest.9d6845770d5e0b9cf43ab480749f72a9.js": "/apples-test/precache-manifest.9d6845770d5e0b9cf43ab480749f72a9.js",
     "service-worker.js": "/apples-test/service-worker.js",
     "static/css/2.8aa5a7f8.chunk.css.map": "/apples-test/static/css/2.8aa5a7f8.chunk.css.map",
     "static/css/main.34f95f0b.chunk.css.map": "/apples-test/static/css/main.34f95f0b.chunk.css.map",
-    "static/js/2.db535c9f.chunk.js.LICENSE.txt": "/apples-test/static/js/2.db535c9f.chunk.js.LICENSE.txt",
+    "static/js/2.f0831f13.chunk.js.LICENSE.txt": "/apples-test/static/js/2.f0831f13.chunk.js.LICENSE.txt",
     "static/media/check.ad5c9a4d.svg": "/apples-test/static/media/check.ad5c9a4d.svg",
     "static/media/download.ee0f53e6.svg": "/apples-test/static/media/download.ee0f53e6.svg",
     "static/media/gear.df5a5055.svg": "/apples-test/static/media/gear.df5a5055.svg",
@@ -24,8 +24,8 @@
   "entrypoints": [
     "static/js/runtime-main.d5466fca.js",
     "static/css/2.8aa5a7f8.chunk.css",
-    "static/js/2.db535c9f.chunk.js",
+    "static/js/2.f0831f13.chunk.js",
     "static/css/main.34f95f0b.chunk.css",
-    "static/js/main.9ca40dca.chunk.js"
+    "static/js/main.26acebfd.chunk.js"
   ]
 }
