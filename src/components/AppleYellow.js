@@ -1,6 +1,6 @@
 import React from 'react';
 import { Badge, Button, Col, Form, Modal, OverlayTrigger, Popover, Row } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { sleep, shuffle } from '../utils';
 import { ReactComponent as Home } from '../assets/icons/home.svg';
 import { ReactComponent as Gear } from '../assets/icons/gear.svg';
@@ -73,6 +73,13 @@ class AppleYellow extends React.Component {
   /******************
    * UI INTERACTION *
    ******************/
+  preventCloseHandler = () => {
+    const ok = window.confirm('Are you sure you want to close? Don\'t forget to download the results');
+    if (ok) {
+      this.props.history.push('/');
+    }
+  }
+
   updateSetting = (e) => {
     if (e.target.id === 'participant') {
       this.setState({ [e.target.id]: e.target.value });
@@ -134,7 +141,7 @@ class AppleYellow extends React.Component {
     link.setAttribute('download', `${this.state.participant}_${this.state.testType}_${new Date().toISOString()}.txt`);
     link.click();
     link.remove();
-  };
+  }
 
   /********************
    * HELPER FUNCTIONS *
@@ -372,11 +379,9 @@ class AppleYellow extends React.Component {
           <>
             <div className="menu">
               <div className="actions-btn-group">
-                <Link to="/">
-                  <Button variant="warning" className="mb-2">
-                    <Home alt="" title="Home" />
-                  </Button>
-                </Link><br />
+                <Button onClick={() => this.preventCloseHandler()} variant="warning" className="mb-2">
+                  <Home alt="" title="Home" />
+                </Button><br />
                 <Button onClick={() => this.setState({ showSettings: true })} variant="secondary" className="mb-2">
                   <Gear alt="" title="Settings" />
                 </Button><br />
@@ -505,4 +510,4 @@ class AppleYellow extends React.Component {
   }
 }
 
-export default AppleYellow;
+export default withRouter(AppleYellow);

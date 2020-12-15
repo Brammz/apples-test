@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, globalShortcut } = require('electron');
+const { app, BrowserWindow, Menu, globalShortcut, dialog } = require('electron');
 const path = require('path');
 const isDev = require('electron-is-dev');
 
@@ -10,6 +10,17 @@ function createWindow () {
     height: 900,
     webPreferences: {
       nodeIntegration: true
+    }
+  });
+  window.on('close', (e) => {
+    const choice = dialog.showMessageBoxSync(window, {
+      type: 'question',
+      buttons: ['Ok', 'Cancel'],
+      title: 'Confirm',
+      message: 'Are you sure you want to close? Don\'t forget to download the results',
+    });
+    if (choice === 1) {
+      e.preventDefault();
     }
   });
   window.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`);

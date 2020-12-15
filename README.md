@@ -1,5 +1,9 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+To build for electron, set `homepage` in `package.json` to `"./"`.
+
+To deploy to GitHub pages, set `homepage` in `package.json` to the ghpages url.
+
 ## Available Scripts
 
 In the project directory, you can run:
